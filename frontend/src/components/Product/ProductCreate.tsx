@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { productApi } from "../../api/productApi";
-import type { Product, ProductStatus } from "../..//types/product";
+import type { ProductStatus } from "../../types/product";
 type Props = {
   onCreated: () => void;
   onCancel: () => void;

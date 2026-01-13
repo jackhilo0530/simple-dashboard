@@ -23,9 +23,7 @@ const ProductDashboard: React.FC<Props> = ({
       </div>
 
       {loading && <p>loading...</p>}
-
-      {!loading && products.length === 0 && <p>no products yet.</p>}
-
+      {/* {(() => { console.log('This is a log inside return'); return null; })()} */}
       {!loading && products.length > 0 && (
         <table style={{ borderCollapse: "collapse", width: "100%" }}>
           <thead>
