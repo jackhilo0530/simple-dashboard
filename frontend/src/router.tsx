@@ -6,10 +6,12 @@ import Dashboard from './pages/Dashboard';
 import MainLayout from './layout';
 import Products from './pages/Products';
 import Product from './pages/Product';
+import AuthLayout from './layout/AuthLayout';
 
 const router = createBrowserRouter([
   {
     path: '/auth',
+    element: <AuthLayout/>,
     children: [
       {
         index: true,
@@ -24,18 +26,18 @@ const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <MainLayout/>,
+    element: <MainLayout />,
     children: [
       {
         index: true,
-        element: <Dashboard/>
+        element: <Dashboard />
       },
       {
         path: 'products',
         children: [
           {
             index: true,
-            element: <Products/>,
+            element: <Products />,
           },
           {
             path: ':id',
