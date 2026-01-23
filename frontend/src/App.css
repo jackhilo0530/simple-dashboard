@@ -40,3 +40,29 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Header Styles */
+header {
+    background-color: #333; /* Dark background */
+    color: white; /* White text */
+    padding: 1rem; /* Some space inside */
+    width: 100%; /* Full width */
+    /* Add any other specific styles, e.g., position: fixed, if desired */
+}
+
+/* Sidebar Styles */
+aside {
+    background-color: #f1f1f1; /* Light gray background */
+    padding: 1rem;
+    width: 200px; /* Fixed width sidebar, adjust as needed */
+    /* Use 'order: -1;' if you want the sidebar on the right using the same HTML structure */
+}
+
+/* Footer Styles */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 1rem;
+    text-align: center; /* Center-aligns text */
+    width: 100%;
+}
