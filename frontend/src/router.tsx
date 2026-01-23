@@ -6,10 +6,12 @@ import Dashboard from './pages/Dashboard';
 import MainLayout from './layout';
 import Products from './pages/Products';
 import Product from './pages/Product';
+import AuthLayout from './layout/AuthLayout';
 
 const router = createBrowserRouter([
   {
     path: '/auth',
+    element: <AuthLayout/>,
     children: [
       {
         index: true,
