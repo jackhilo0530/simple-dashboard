@@ -7,10 +7,10 @@ import Footer from './Footer';
 const MainLayout: React.FC = () => {
     return (
         <>
-            <Header/>
-            <Sidebar/>
-            <Outlet/>
-            <Footer/>
+            <Header />
+            <Sidebar />
+            <Outlet />
+            <Footer />
         </>
     )
 }
