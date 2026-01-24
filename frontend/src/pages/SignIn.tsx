@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import { EyeIcon, Check} from 'lucide-react';
 
 const SignIn: React.FC = () => {
@@ -60,15 +61,15 @@ const SignIn: React.FC = () => {
                         </div>
                         <div>
                             <button className='inline-flex items-center justify-center gap-2 rounded-lg transition w-full px-4 py-3 text-sm bg-brand-500 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300'>
-                                Sign in
+                                Sign In
                             </button>
                         </div>
                     </div>
                 </form>
                 <div className='mt-5'>
                     <p className='text-sm font-normal text-start text-gray-700'>
-                        Don't have an account? 
-                        <a className='text-brand-500 hover:text-brand-600' href="#" data-discover="true">Sign Up</a>
+                        Don't have an account?
+                        <Link className='text-brand-500 hover:text-brand-600' data-discover="true" to="/auth/signup">Sign Up</Link>
                     </p>
                 </div>
             </div>
