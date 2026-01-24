@@ -1,21 +1,28 @@
-import React, {useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
-import {signupApi} from "../services/authService";
-import { EyeIcon, Check} from "lucide-react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { signupApi } from "../services/authService";
+import { EyeIcon, Check } from "lucide-react";
 
 const SignUp: React.FC = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        await signupApi(firstName, lastName, email, password);
+        try {
+            await signupApi(firstName, lastName, email, password);
 
-        navigate("/auth/signin");
+            navigate("/auth/signin");
+        } catch(err) {
+            if(err instanceof Error) {
+                setError(err.message);
+            }else setError("Unknown error occured");
+        }
     };
 
     return (
@@ -34,6 +41,11 @@ const SignUp: React.FC = () => {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit}>
+                    {error && (
+                        <p className="text-red-600 text-center font-semibold">
+                            {error}
+                        </p>
+                    )}
                     <div className="space-y-6">
                         <div className="grid grid-cols-2 gap-5">
                             <div className="col-span-1">
@@ -42,7 +54,7 @@ const SignUp: React.FC = () => {
                                     <span className="text-error-500">*</span>
                                 </label>
                                 <div className="relative">
-                                    <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required name="fname" id="fname" placeholder="Enter your first name" className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20"/>
+                                    <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required name="fname" id="fname" placeholder="Enter your first name" className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20" />
                                 </div>
                             </div>
                             <div className="col-span-1">
@@ -51,7 +63,7 @@ const SignUp: React.FC = () => {
                                     <span className="text-error-500">*</span>
                                 </label>
                                 <div className="relative">
-                                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required name="fname" id="fname" placeholder="Enter your last name" className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20"/>
+                                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required name="lname" id="lname" placeholder="Enter your last name" className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20" />
                                 </div>
                             </div>
 
@@ -79,7 +91,7 @@ const SignUp: React.FC = () => {
                                         text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20"/>
                                 </div>
                                 <span className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2">
-                                    <EyeIcon size={24} color="gray"/>
+                                    <EyeIcon size={24} color="gray" />
                                 </span>
                             </div>
                         </div>
@@ -106,7 +118,7 @@ const SignUp: React.FC = () => {
                 </form>
                 <div className="mt-5">
                     <p className="text-sm font-normal text-start text-gray-700">
-                        Already have an account? 
+                        Already have an account?
                         <Link className="text-brand-500 hover:text-brand-600" data-discover="true" to="/auth/signin">Sign In</Link>
                     </p>
                 </div>

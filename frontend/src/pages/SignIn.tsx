@@ -6,13 +6,20 @@ import { EyeIcon, Check } from 'lucide-react';
 const SignIn: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        await signinApi(email, password);
+        try {
+            await signinApi(email, password);
 
-        navigate("/");
+            navigate("/");
+        } catch(err) {
+            if(err instanceof Error) {
+                setError(err.message);
+            }else setError("unknown error occured");
+        }
     };
 
 
@@ -33,6 +40,11 @@ const SignIn: React.FC = () => {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit}>
+                    {error && (
+                        <p className='text-red-600 text-center font-semibold'>
+                            {error}
+                        </p>
+                    )}
                     <div className='space-y-6'>
                         <div>
                             <label className='mb-1.5 block text-sm font-medium text-gray-700'>
