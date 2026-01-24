@@ -64,16 +64,12 @@ export const UserService = {
         });
 
         if(!user) {
-            const err: any = new Error("invalid email or password");
-            err.code = "INVALID_CREDENTIALS";
-            throw err;
+            throw{type: "authentication", message: "email or password doesn't exist"};
         }
 
         const isMatch = await bcrypt.compare(parsed.data.password, user.password);
         if(!isMatch) {
-            const err: any = new Error("invalid email or password");
-            err.code = "INVALID_CREDENTIALS ";
-            throw err;
+            throw{type: "authentication", message: "email or password doesn't exist"};
         }
 
         const token = jwt.sign({userId: user.id, email: user.email}, JWT_SECRET, {expiresIn: "7d"});
