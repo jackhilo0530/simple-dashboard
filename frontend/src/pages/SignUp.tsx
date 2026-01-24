@@ -15,8 +15,8 @@ const SignUp: React.FC = () => {
         event.preventDefault();
         await signupApi(firstName, lastName, email, password);
 
-        navigate("/auth/login");
-};
+        navigate("/auth/signin");
+    };
 
     return (
         <div>

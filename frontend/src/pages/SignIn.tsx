@@ -1,8 +1,22 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
-import { EyeIcon, Check} from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { signinApi } from '../services/authService';
+import { EyeIcon, Check } from 'lucide-react';
 
 const SignIn: React.FC = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        await signinApi(email, password);
+
+        navigate("/");
+    };
+
+
+
     return (
         <div>
             <div className='mb-8'>
@@ -18,7 +32,7 @@ const SignIn: React.FC = () => {
                         <span className=' text-gray-400 bg-white px-5 py-2'>Or</span>
                     </div>
                 </div>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className='space-y-6'>
                         <div>
                             <label className='mb-1.5 block text-sm font-medium text-gray-700'>
@@ -26,7 +40,7 @@ const SignIn: React.FC = () => {
                                 <span className='text-error-500'>*</span>
                             </label>
                             <div className='relative'>
-                                <input type="text" placeholder='info@gmail.com' className='h-11 w-full rounded-lg border appearance-none 
+                                <input type="text" onChange={(e) => setEmail(e.target.value)} required placeholder='info@gmail.com' className='h-11 w-full rounded-lg border appearance-none 
                                         px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent
                                         text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20'/>
                             </div>
@@ -38,12 +52,12 @@ const SignIn: React.FC = () => {
                             </label>
                             <div className='relative'>
                                 <div>
-                                    <input type="password" placeholder='Enter your password' className='h-11 w-full rounded-lg border appearance-none 
+                                    <input type="password" onChange={(e) => setPassword(e.target.value)} required placeholder='Enter your password' className='h-11 w-full rounded-lg border appearance-none 
                                         px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent
                                         text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20'/>
                                 </div>
                                 <span className='absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2'>
-                                    <EyeIcon size={24} color="gray"/>
+                                    <EyeIcon size={24} color="gray" />
                                 </span>
                             </div>
                         </div>
