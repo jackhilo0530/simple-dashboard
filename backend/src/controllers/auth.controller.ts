@@ -7,7 +7,9 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 export const AuthController = {
   signup: async (c: Context) => {
-    const { email, password, name } = await c.req.json();
+    const { email, password, firstName, lastName } = await c.req.json();
+
+    const name = firstName + lastName;
 
     if (!email || !password || !name) return c.json({ error: "Email and password required" }, 400);
 
@@ -22,7 +24,7 @@ export const AuthController = {
     return c.json({ id: user.id, email: user.email, token });
   },
 
-  login: async (c: Context) => {
+  signin: async (c: Context) => {
     const { email, password } = await c.req.json();
 
     if (!email || !password) return c.json({ error: "Email and password required" }, 400);
