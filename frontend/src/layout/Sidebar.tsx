@@ -1,4 +1,5 @@
 import React from 'react';
+import { Navbar } from '../components/NavBar';
 
 const Sidebar: React.FC = () => {
     return (
@@ -9,18 +10,8 @@ const Sidebar: React.FC = () => {
                 </a>
             </div>
             <div className='flex flex-col overflow-y-auto duration-300 ease-liner no-scrollbar'>
-                <nav className='mb-6'>
-                    <div className='flex flex-col gap-4'>
-                        <div>
-                            <h2 className='mb-4 text-xs uppercase flex leading-[20px] text-gray-400 justify-start'>Menu</h2>
-                            <ul className='flex flex-col gap-1'>
-                                <li>Products</li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
+                <Navbar />
             </div>
-            Side Bar
         </aside>
     )
 }
