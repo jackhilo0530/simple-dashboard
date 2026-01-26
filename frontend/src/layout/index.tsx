@@ -1,10 +1,24 @@
 import React from 'react';
+import { useEffect } from 'react';
 import { Outlet } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
 
 const MainLayout: React.FC = () => {
+    const navigate = useNavigate();
+    const auth = useAuth();
+
+    console.log(auth);
+
+    useEffect(() => {
+        if(auth?.token === "") {
+            navigate("/auth/signin");
+        }
+    });
+
     return (
         <>
             <Sidebar />
