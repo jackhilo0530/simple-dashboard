@@ -17,6 +17,29 @@
   -moz-osx-font-smoothing: grayscale;
 
 }
+.menu-item {
+    align-items: center;
+    background-color: white;
+    gap: calc(var(--spacing) * 3);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    padding-inline: calc(var(--spacing) * 3);
+    padding-block: calc(var(--spacing) * 2);
+    font-size: var(--text-theme-sm);
+    line-height: var(--tw-leading, var(--text-theme-sm--line-height));
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+    display: flex;
+    position: relative;
+}
+
+.menu-item-inactive {
+    color: var(--color-gray-700);
+}
+
+.menu-item-icon-inactive {
+    color: var(--color-gray-500);
+}
 
 #root {
   width: 100%;
