@@ -8,10 +8,9 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
 export const AuthController = {
   signup: async (c: Context) => {
     const { email, password, firstName, lastName } = await c.req.json();
-
+    
+    if (!email || !password || !firstName || !lastName) return c.json({ error: "Email and password required" }, 400);
     const name = firstName + lastName;
-
-    if (!email || !password || !name) return c.json({ error: "Email and password required" }, 400);
 
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return c.json({ error: "Email already exists" }, 400);
