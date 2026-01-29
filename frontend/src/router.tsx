@@ -7,50 +7,56 @@ import MainLayout from './layout';
 import Products from './pages/Products';
 import Product from './pages/Product';
 import AuthLayout from './layout/AuthLayout';
+import { AuthProvider } from './providers';
 
 const router = createBrowserRouter([
   {
-    path: '/auth',
-    element: <AuthLayout/>,
+    Component: AuthProvider,
     children: [
       {
-        index: true,
-        path: 'signin',
-        element: <SignIn />,
-      },
-      {
-        path: 'signup',
-        element: <SignUp />,
-      },
-    ],
-  },
-  {
-    path: '/',
-    element: <MainLayout />,
-    children: [
-      {
-        index: true,
-        element: <Dashboard />
-      },
-      {
-        path: 'products',
+        path: '/auth',
+        element: <AuthLayout />,
         children: [
           {
             index: true,
-            element: <Products />,
+            path: 'signin',
+            element: <SignIn />,
           },
           {
-            path: ':id',
-            element: <Product />
+            path: 'signup',
+            element: <SignUp />,
+          },
+        ],
+      },
+      {
+        path: '/',
+        element: <MainLayout />,
+        children: [
+          {
+            index: true,
+            element: <Dashboard />
+          },
+          {
+            path: 'products',
+            children: [
+              {
+                index: true,
+                element: <Products />,
+              },
+              {
+                path: ':id',
+                element: <Product />
+              }
+            ]
           }
         ]
+      },
+      {
+        path: '*',
+        element: <NotFound />,
       }
     ]
-  },
-  {
-    path: '*',
-    element: <NotFound />,
-  },
+  }
 ]);
 
 export default router;
