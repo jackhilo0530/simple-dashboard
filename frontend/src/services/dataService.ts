@@ -10,20 +10,19 @@ const getAuthHeaders = () => {
 };
 
 export const productApi = {
-    async list(): Promise<Product[]> {
-        const res = await fetch(`${API_BASE}/api/products`, {
+    async list(page: number, limit: number): Promise<{products: Product[], total: number}> {
+        const res = await fetch(`${API_BASE}/api/products?page=${page}&limit=${limit}`, {
             headers: getAuthHeaders(),
         });
         console.log(res);
 
-        const {products} = await res.json();
-
+        const data = await res.json();
 
         if (!res.ok) {
-            throw new Error(products.message || "failed to fetch products");
+            throw new Error(data.message || "failed to fetch products");
         }
-        console.log(products);
-        return products;
+        console.log(data);
+        return data;
     },
 
     async getProduct(id: number): Promise<Product> {

@@ -22,7 +22,7 @@ export default function ProductCard({ product }: { product: Product }) {
                         <div className='h-12 w-12'>
                             {product.images ? (
                                 <img
-                                    src={product.images}
+                                    src={product.images[0]}
                                     alt=""
                                     className='h-15 w-15 rounded-md'
                                 />
