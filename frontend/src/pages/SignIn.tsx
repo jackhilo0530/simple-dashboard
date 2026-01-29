@@ -1,28 +1,30 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { signinApi } from '../services/authService';
+import { Link } from 'react-router-dom';
 import { EyeIcon, Check } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import { signinApi } from '../services/authService';
 
 const SignIn: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const navigate = useNavigate();
+    const auth = useAuth();
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
-            await signinApi(email, password);
-
-            navigate("/");
-        } catch(err) {
-            if(err instanceof Error) {
+            const data = await signinApi(email, password);
+            if (!data.token) {
+                setError("No token in login response.");
+                return;
+            }
+            await auth?.signin(data.token);
+        } catch (err) {
+            if (err instanceof Error) {
                 setError(err.message);
-            }else setError("unknown error occured");
+            } else setError("Unknown error occured");
         }
     };
-
-
 
     return (
         <div>
