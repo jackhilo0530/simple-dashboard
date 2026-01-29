@@ -16,7 +16,7 @@ export const LogoutButton = () => {
     return (
         <div className="relative">
             <button className='flex items-center text-gray-700 dropdown-toggle bg-white' onClick={handleToggle}>
-                <span className='mr-3 overflow-hidden rounded-full h-14 w-12'>
+                <span className='mr-3 overflow-hidden rounded-full w-8'>
                     <img src="../public/images/user/default-avatar.png" alt="user" />
                 </span>
                 <span className='block mr-1 font-medium text-theme-sm'>Account</span>
