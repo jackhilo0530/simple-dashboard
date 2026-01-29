@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import z from 'zod';
-import { signinApi } from '../services/authService';
 import { EyeIcon, Check } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { signinApi } from '../services/authService';
@@ -21,7 +20,7 @@ const SignIn: React.FC = () => {
     });
     const [errors, setErrors] = useState<FormErrors>({});
     const [apiErrors, setApiErrors] = useState("");
-    const navigate = useNavigate();
+    const auth = useAuth();
 
     const validateForm = (data: FormData, field?: keyof FormData): FormErrors => {
         try{
@@ -44,9 +43,13 @@ const SignIn: React.FC = () => {
 
             const email = formData.email;
             const password = formData.password;
-            await signinApi(email, password);
+            const data = await signinApi(email, password);
+            if(!data.token) {
+                setApiErrors("No token in login response.");
+                return;
+            }
+            await auth?.signin(data.token);
 
-            navigate("/");
         } catch(err) {
             if(err instanceof Error) {
                 setApiErrors(err.message)
