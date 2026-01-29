@@ -10,6 +10,8 @@ const Products: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
+    const [sortBy, setSortBy] = useState<string>("");
+    const [order, setOrder] = useState("asc");
     const [totalPages, setTotalpages] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +21,7 @@ const Products: React.FC = () => {
         (async () => {
             try {
                 setError(null);
-                const data = await productApi.list(page, PRODUCT_PER_PAGE, search);
+                const data = await productApi.list(page, PRODUCT_PER_PAGE, search, sortBy, order);
                 setProducts(data.products);
                 setTotalpages(Math.ceil(data.total / PRODUCT_PER_PAGE));
             } catch (e: any) {
@@ -28,7 +30,7 @@ const Products: React.FC = () => {
                 setLoading(false);
             }
         })();
-    }, [page, search]);
+    }, [page, search, sortBy, order]);
 
     const handlePrevPage = () => {
         if(page > 0) {
@@ -104,7 +106,7 @@ const Products: React.FC = () => {
                                             </span>
                                         </label>
                                     </th>
-                                    <th className='cursor-pointer px-1 whitespace-nowrap py-4 text-left text-xs font-medium text-gray-500'>
+                                    <th onClick={() => {setSortBy("title"); setOrder((order === "asc") ? "desc" : "asc")}} className='cursor-pointer px-1 whitespace-nowrap py-4 text-left text-xs font-medium text-gray-500'>
                                         <div className='flex items-center gap-3'>
                                             <p className='text-xs font-medium text-gray-500'>Products</p>
                                             <span className='flex flex-col gap-0.5'>
@@ -113,7 +115,7 @@ const Products: React.FC = () => {
                                             </span>
                                         </div>
                                     </th>
-                                    <th className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
+                                    <th onClick={() => {setSortBy("description"); setOrder((order === "asc") ? "desc" : "asc")}} className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
                                         <div className='flex items-center gap-3'>
                                             <p className='text-xs font-medium text-gray-500'>Description</p>
                                             <span className='flex flex-col gap-0.5'>
@@ -122,7 +124,7 @@ const Products: React.FC = () => {
                                             </span>
                                         </div>
                                     </th>
-                                    <th className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
+                                    <th onClick={() => {setSortBy("price"); setOrder((order === "asc") ? "desc" : "asc")}} className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
                                         <div className='flex items-center gap-3'>
                                             <p className='text-xs font-medium text-gray-500'>Price</p>
                                             <span className='flex flex-col gap-0.5'>
@@ -131,7 +133,7 @@ const Products: React.FC = () => {
                                             </span>
                                         </div>
                                     </th>
-                                    <th className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
+                                    <th onClick={() => {setSortBy("category"); setOrder((order === "asc") ? "desc" : "asc")}} className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
                                         <div className='flex items-center gap-3'>
                                             <p className='text-xs font-medium text-gray-500'>Category</p>
                                             <span className='flex flex-col gap-0.5'>

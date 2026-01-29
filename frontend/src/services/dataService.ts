@@ -10,8 +10,8 @@ const getAuthHeaders = () => {
 };
 
 export const productApi = {
-    async list(page: number, limit: number, search: string): Promise<{products: Product[], total: number}> {
-        const res = await fetch(`${API_BASE}/api/products?search=${search}&page=${page}&limit=${limit}`, {
+    async list(page: number, limit: number, search: string, sortBy: string, order: string): Promise<{products: Product[], total: number}> {
+        const res = await fetch(`${API_BASE}/api/products?sortBy=${sortBy}&order=${order}&search=${search}&page=${page}&limit=${limit}`, {
             headers: getAuthHeaders(),
         });
         console.log(res);
