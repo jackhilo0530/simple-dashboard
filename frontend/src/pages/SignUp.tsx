@@ -48,7 +48,7 @@ const SignUp: React.FC = () => {
             const email = formData.email;
             const password = formData.password;
 
-            await signupApi(email, password, name);
+            await signupApi(name, email, password);
 
             navigate("/auth/signin");
         } catch(err) {

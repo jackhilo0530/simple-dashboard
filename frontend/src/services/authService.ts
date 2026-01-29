@@ -1,7 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
-export const signupApi = async (firstName: string, lastName: string, email: string, password: string) => {
-    const name = firstName + lastName;
+export const signupApi = async (name: string, email: string, password: string) => {
     const res = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
