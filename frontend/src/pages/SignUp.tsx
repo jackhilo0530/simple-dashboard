@@ -1,29 +1,72 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
+import z from "zod";
 import { signupApi } from "../services/authService";
 import { EyeIcon, Check } from "lucide-react";
 
+const signupSchema = z.object({
+    email: z.string().email(),
+    password: z.string().min(6),
+    firstName: z.string(),
+    lastName: z.string(),
+});
+
+type FormData = z.infer<typeof signupSchema>;
+type FormErrors = Partial<Record<keyof FormData, string[]>>;
+
 const SignUp: React.FC = () => {
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [formData, setFormData] = useState<FormData>({
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: ""
+    });
+
+    const [errors, setErrors] = useState<FormErrors>({});
+    const [apiErrors, setApiErrors] = useState("");
     const navigate = useNavigate();
 
+    const validateForm = (data: FormData, field?: keyof FormData): FormErrors => {
+        try{
+            signupSchema.parse(data);
+            return field ? {[field]: []} : {};
+        }catch (error) {
+            if(error instanceof z.ZodError) {
+                return error.flatten().fieldErrors;
+            }
+            return {};
+        }
+    };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
-            await signupApi(firstName, lastName, email, password);
+            const newErrors = validateForm(formData);
+            setErrors(newErrors);
+
+            const name = formData.firstName + formData.lastName;
+            const email = formData.email;
+            const password = formData.password;
+
+            await signupApi(email, password, name);
 
             navigate("/auth/signin");
         } catch(err) {
             if(err instanceof Error) {
-                setError(err.message);
-            }else setError("Unknown error occured");
+                setApiErrors(err.message)
+            }else setApiErrors("Unknown error occured");
         }
     };
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+        const {name, value} = e.target;
+        const updatedFormData = { ...formData, [name]: value};
+        setFormData(updatedFormData);
+        const newErrors = validateForm(updatedFormData);
+        setErrors(newErrors);
+    }
 
     return (
         <div>
@@ -41,9 +84,9 @@ const SignUp: React.FC = () => {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit}>
-                    {error && (
+                    {apiErrors && (
                         <p className="text-red-600 text-center font-semibold">
-                            {error}
+                            {apiErrors}
                         </p>
                     )}
                     <div className="space-y-6">
@@ -54,7 +97,8 @@ const SignUp: React.FC = () => {
                                     <span className="text-error-500">*</span>
                                 </label>
                                 <div className="relative">
-                                    <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required name="fname" id="fname" placeholder="Enter your first name" className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20" />
+                                    <input type="text" value={formData.firstName} onChange={handleChange} required name="firstName" id="firstName" placeholder="Enter your first name" className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20" />
+                                    {errors.firstName && <span>{errors.firstName}</span>}
                                 </div>
                             </div>
                             <div className="col-span-1">
@@ -63,7 +107,8 @@ const SignUp: React.FC = () => {
                                     <span className="text-error-500">*</span>
                                 </label>
                                 <div className="relative">
-                                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required name="lname" id="lname" placeholder="Enter your last name" className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20" />
+                                    <input type="text" value={formData.lastName} onChange={handleChange} required name="lastName" id="lastName" placeholder="Enter your last name" className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20" />
+                                    {errors.lastName && <span>{errors.lastName}</span>}
                                 </div>
                             </div>
 
@@ -74,9 +119,10 @@ const SignUp: React.FC = () => {
                                 <span className="text-error-500">*</span>
                             </label>
                             <div className="relative">
-                                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="info@gmail.com" className="h-11 w-full rounded-lg border appearance-none 
+                                <input type="email" value={formData.email} onChange={handleChange} required name="email" placeholder="info@gmail.com" className="h-11 w-full rounded-lg border appearance-none 
                                         px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent
                                         text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20"/>
+                                {errors.email && <span>{errors.email}</span>}
                             </div>
                         </div>
                         <div>
@@ -86,9 +132,10 @@ const SignUp: React.FC = () => {
                             </label>
                             <div className="relative">
                                 <div>
-                                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Enter your password" className="h-11 w-full rounded-lg border appearance-none 
+                                    <input type="password" value={formData.password} onChange={handleChange} required name="password" placeholder="Enter your password" className="h-11 w-full rounded-lg border appearance-none 
                                         px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent
                                         text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20"/>
+                                    {errors.password && <span>{errors.password}</span>}
                                 </div>
                                 <span className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2">
                                     <EyeIcon size={24} color="gray" />
