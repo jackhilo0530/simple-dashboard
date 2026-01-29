@@ -50,7 +50,7 @@ export const AuthController = {
       if(err.type === "authentication") {
         return c.json(
           {
-            message: "authentication error",
+            message: "email or password doen't exist",
             errors: err.errors,
           },
           401
