@@ -9,6 +9,7 @@ const Products: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState<number>(0);
+    const [search, setSearch] = useState<string>("");
     const [totalPages, setTotalpages] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +19,7 @@ const Products: React.FC = () => {
         (async () => {
             try {
                 setError(null);
-                const data = await productApi.list(page, PRODUCT_PER_PAGE);
+                const data = await productApi.list(page, PRODUCT_PER_PAGE, search);
                 setProducts(data.products);
                 setTotalpages(Math.ceil(data.total / PRODUCT_PER_PAGE));
             } catch (e: any) {
@@ -27,7 +28,7 @@ const Products: React.FC = () => {
                 setLoading(false);
             }
         })();
-    }, [page]);
+    }, [page, search]);
 
     const handlePrevPage = () => {
         if(page > 0) {
@@ -76,7 +77,7 @@ const Products: React.FC = () => {
                             <span className='absolute top-1/2 left-4 -translate-y-1/2 text-gray-500'>
                                 <Search width="20" height="20" viewBox="0 0 20 20" />
                             </span>
-                            <input type="text" placeholder='Search...' className='shadow-sm focus:border-brand-300 focus:ring-brand-500/10 h-11 w-[300px] rounded-lg border border-gray-300 bg-transparent py-2.5 pr-4 pl-11 text-sm text-gray-800 placeholder:text-tray-400 focus:ring-3 focus:outline-none' />
+                            <input type="text" value={search} placeholder='Search...' onChange={(e) => setSearch(e.target.value)} className='shadow-sm focus:border-brand-300 focus:ring-brand-500/10 h-11 w-[300px] rounded-lg border border-gray-300 bg-transparent py-2.5 pr-4 pl-11 text-sm text-gray-800 placeholder:text-tray-400 focus:ring-3 focus:outline-none' />
                         </div>
                         <div className='relative'>
                             <button className='flex items-center shadow-theme-xs h-11 justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 w-auto min-w-[100px]'>
