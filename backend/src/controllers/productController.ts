@@ -18,8 +18,9 @@ export const ProductController = {
             const page = Number(c.req.query("page") || 0);
             const limit = Number(c.req.query("limit") || PRODUCTS_PER_PAGE);
             const skip = page * limit;
+            const search = String(c.req.query("search") || "");
 
-            const products = await fetchProducts(skip, limit);
+            const products = await fetchProducts(skip, limit, search);
             return c.json(products);
         } catch (error) {
             return c.json({ message: "internal server error" }, 500)
