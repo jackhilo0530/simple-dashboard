@@ -19,8 +19,10 @@ export const ProductController = {
             const limit = Number(c.req.query("limit") || PRODUCTS_PER_PAGE);
             const skip = page * limit;
             const search = String(c.req.query("search") || "");
+            const sortBy = String(c.req.query("sortBy") || "");
+            const order = String(c.req.query("order") || "");
 
-            const products = await fetchProducts(skip, limit, search);
+            const products = await fetchProducts(skip, limit, search, sortBy, order);
             return c.json(products);
         } catch (error) {
             return c.json({ message: "internal server error" }, 500)

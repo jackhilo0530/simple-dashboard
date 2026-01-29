@@ -9,8 +9,9 @@ export type DummyProduct = {
     image: string;
 };
 
-export async function fetchProducts(skip: number, limit: number, search: string) {
-    const res = await fetch(`${BASE_URL}/products/search?q=${search}&skip=${skip}&limit=${limit}&select=title,description,price,category,images`);
+export async function fetchProducts(skip: number, limit: number, search: string, sortBy: string, order: string) {
+    
+    const res = await fetch(`${BASE_URL}/products/search?q=${search}&skip=${skip}&limit=${limit}&sortBy=${sortBy}&order=${order}&select=title,description,price,category,images`);
     if (!res.ok) throw new Error("failed to fetch products");
     return (await res.json());
 }
