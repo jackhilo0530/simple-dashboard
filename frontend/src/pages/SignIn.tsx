@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import z from 'zod';
 import { signinApi } from '../services/authService';
 import { EyeIcon, Check } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import { signinApi } from '../services/authService';
 
 const signinSchema = z.object({
     email: z.string().email(),
