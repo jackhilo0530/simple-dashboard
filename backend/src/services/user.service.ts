@@ -1,4 +1,4 @@
-import {prisma} from "../db/prisma";
+import {prisma} from "../lib/prisma";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import z from "zod";
