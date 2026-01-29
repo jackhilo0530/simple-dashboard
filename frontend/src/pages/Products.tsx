@@ -8,21 +8,38 @@ import { productApi } from "../services/dataService"
 const Products: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState<number>(0);
+    const [totalPages, setTotalpages] = useState<number>(0);
     const [error, setError] = useState<string | null>(null);
+
+    const PRODUCT_PER_PAGE = 10;
 
     useEffect(() => {
         (async () => {
             try {
                 setError(null);
-                const list = await productApi.list();
-                setProducts(list);
+                const data = await productApi.list(page, PRODUCT_PER_PAGE);
+                setProducts(data.products);
+                setTotalpages(Math.ceil(data.total / PRODUCT_PER_PAGE));
             } catch (e: any) {
                 setError(e?.message ?? "failed to load products");
             } finally {
                 setLoading(false);
             }
         })();
-    }, []);
+    }, [page]);
+
+    const handlePrevPage = () => {
+        if(page > 0) {
+            setPage(page - 1)
+        }
+    };
+
+    const handleNextPage = () => {
+        if(page < totalPages - 1) {
+            setPage(page + 1)
+        }
+    }
 
     return (
         <div className='p-6 pb-24 mx-auto max-w-(--breakpoint-2xl)'>
@@ -132,46 +149,18 @@ const Products: React.FC = () => {
                         </table>
                     )}
                 </div>
-                <div className='flex items-center flex-row justify-between border-t border-gray-200 px-5'>
-                    <div className='pb-0'>
-                        <span className='block text-sm font-medium text-gray-500'>
-                            Showing
-                            <span className='text-gray-800 px-1'>1</span>
-                            to
-                            <span className='text-gray-800 px-1'>7</span>
-                            of
-                            <span className='text-gray-800 px-1'>20</span>
+                <div className='flex w-auto items-center justify-end border-t border-gray-200 gap-2 rounded-none bg-transparent p-4'>
+                    <button onClick={handlePrevPage} disabled={page === 0} className='shadow-sm flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2.5 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50'>
+                        <span>
+                            <MoveLeft size={20} />
                         </span>
-                    </div>
-                    <div className='flex w-auto items-center justify-normal gap-2 rounded-none bg-transparent p-0'>
-                        <button disabled className='shadow-sm flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2.5 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50'>
-                            <span>
-                                <MoveLeft size={20} />
-                            </span>
-                        </button>
-                        <ul className='flex items-center gap-0.5'>
-                            <li>
-                                <a href="#" className='flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium bg-brand-500 text-white'>
-                                    <span>1</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className='flex h-10 w-10 items-center justify-center rounded-lg bg-white text-sm font-medium text-gray-700'>
-                                    <span>2</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className='flex h-10 w-10 items-center justify-center rounded-lg bg-white text-sm font-medium text-gray-700'>
-                                    <span>3</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <button disabled className='shadow-sm flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2.5 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50'>
-                            <span>
-                                <MoveRight size={20} />
-                            </span>
-                        </button>
-                    </div>
+                    </button>
+                    <span>{`Page ${page + 1} of ${totalPages}`}</span>
+                    <button onClick={handleNextPage} disabled={page === (totalPages - 1)} className='shadow-sm flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2.5 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50'>
+                        <span>
+                            <MoveRight size={20} />
+                        </span>
+                    </button>
                 </div>
             </div>
         </div>

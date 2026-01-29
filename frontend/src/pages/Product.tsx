@@ -32,22 +32,20 @@ const Product: React.FC = () => {
     if (!product) return <p className="muted">not found</p>;
 
     return (
-        <section className="grid gap-0.75">
-            <div>
-                <Link to="/products" className="inline-flex gap-2 px-1 py-3 mt-4 ml-3 mb-2 text-lg text-gray-800 text-center font-medium rounded-lg bg-gray-300 shadow-xs w-20">← back</Link>
-                <div className='flex flex-row gap-6 items-center rounded-x1 border border-gray-200 bg-white p-6'>
-                    <div className='overflow-hidden rounded-lg'>
-                        <img className="overflow-hidden rounded-lg max-w-full max-h-[340px]" src={product.images} alt="" />
-                    </div>
-                    <div>
-                        <h2 className='mb-1 text-2xl font-medium text-gray-700'>{product.title}</h2>
-                        <p className='text-lg px-3 text-gray-500'>{product.description}</p>
-                        <p className='mt-3 px-3'>{product.category}</p>
-                        <p className='text-xl px-3 font-medium mt-3'>{product.price}</p>
-                    </div>
+        <div>
+            <Link to="/products" className="inline-flex gap-2 px-1 py-3 mt-4 ml-3 mb-2 text-lg text-gray-800 text-center font-medium rounded-lg bg-gray-300 shadow-xs w-20">← back</Link>
+            <div className='flex flex-row gap-6 items-center rounded-x1 border border-gray-200 bg-white p-6'>
+                <div className='overflow-hidden rounded-lg'>
+                    <img className="overflow-hidden rounded-lg max-w-full max-h-[340px]" src={product.images[0]} alt="" />
+                </div>
+                <div>
+                    <h2 className='mb-1 text-2xl font-medium text-gray-700'>{product.title}</h2>
+                    <p className='text-lg px-3 text-gray-500'>{product.description}</p>
+                    <p className='mt-3 px-3'>{product.category}</p>
+                    <p className='text-xl px-3 font-medium mt-3'>{product.price}</p>
                 </div>
             </div>
-        </section>
+        </div>
     );
 }
 
