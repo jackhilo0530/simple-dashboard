@@ -4,6 +4,6 @@ import { AuthController } from "../controllers/auth.controller";
 const auth = new Hono();
 
 auth.post("/signup", AuthController.signup);
-auth.post("/login", AuthController.login);
+auth.post("/signin", AuthController.signin);
 
 export default auth;

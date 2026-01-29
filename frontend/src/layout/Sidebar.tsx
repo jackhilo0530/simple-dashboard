@@ -1,7 +1,17 @@
 import React from 'react';
+import { Navbar } from '../components/NavBar';
 
 const Sidebar: React.FC = () => {
-    return <aside>Sidebar Page</aside>
+    return (
+        <aside className='fixed flex-col top-0 px-5 left-0 bg-white text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 w-[290px] -translate-x-0'>
+            <div className='py-8 flex justify-start'>
+                <a href="/" data-discover="true">
+                    <img src="../public/images/logo/mark.png" width="150" height="40"  alt="Logo" />
+                </a>
+            </div>
+            <Navbar />
+        </aside>
+    )
 }
 
 export default Sidebar;
