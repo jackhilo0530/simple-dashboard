@@ -10,11 +10,11 @@ const getAuthHeaders = () => {
 };
 
 export const productApi = {
-    async list(page: number, limit: number, search: string, sortBy: string, order: string): Promise<{products: Product[], total: number}> {
-        const res = await fetch(`${API_BASE}/api/products?sortBy=${sortBy}&order=${order}&search=${search}&page=${page}&limit=${limit}`, {
+    async list(page: number, limit: number, search: string, sortBy: string, order: string, filter: string): Promise<{products: Product[], total: number}> {
+        
+        const res =  await fetch(`${API_BASE}/api/products?sortBy=${sortBy}&order=${order}&search=${search}&page=${page}&limit=${limit}&filter=${filter}`, {
             headers: getAuthHeaders(),
         });
-        console.log(res);
 
         const data = await res.json();
 
@@ -36,6 +36,20 @@ export const productApi = {
             throw new Error(product.message || "failed to fetch products");
         }
         return product;
+    },
+
+    async category(): Promise<[]> {
+        const res = await fetch(`${API_BASE}/api/products/category`, {
+            headers: getAuthHeaders(),
+        });
+
+        const list = await res.json();
+
+        if(!res.ok) {
+            throw new Error(list.message || "failed to fetch category-list");
+        }
+
+        return list;
     },
 
     async delete(id: number): Promise<void> {
