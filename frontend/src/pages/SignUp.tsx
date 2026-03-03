@@ -1,14 +1,18 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import z from "zod";
 import { signupApi } from "../services/authService";
-import { EyeIcon, Check } from "lucide-react";
+import { EyeIcon } from "lucide-react";
 
 const signupSchema = z.object({
     email: z.string().email(),
     password: z.string().min(6),
-    firstName: z.string(),
-    lastName: z.string(),
+    username: z.string().min(6),
+    confirmPassword: z.string().min(6),
+    role: z.enum(["USER", "ADMIN"]),
+    img: z.union([z.instanceof(File), z.undefined()]).optional(),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
 });
 
 type FormData = z.infer<typeof signupSchema>;
@@ -16,10 +20,12 @@ type FormErrors = Partial<Record<keyof FormData, string[]>>;
 
 const SignUp: React.FC = () => {
     const [formData, setFormData] = useState<FormData>({
+        username: "",
         email: "",
         password: "",
-        firstName: "",
-        lastName: ""
+        confirmPassword: "",
+        role: "USER",
+        img: undefined,
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
@@ -27,11 +33,11 @@ const SignUp: React.FC = () => {
     const navigate = useNavigate();
 
     const validateForm = (data: FormData, field?: keyof FormData): FormErrors => {
-        try{
+        try {
             signupSchema.parse(data);
-            return field ? {[field]: []} : {};
-        }catch (error) {
-            if(error instanceof z.ZodError) {
+            return field ? { [field]: [] } : {};
+        } catch (error) {
+            if (error instanceof z.ZodError) {
                 return error.flatten().fieldErrors;
             }
             return {};
@@ -44,25 +50,35 @@ const SignUp: React.FC = () => {
             const newErrors = validateForm(formData);
             setErrors(newErrors);
 
-            const name = formData.firstName + formData.lastName;
+            const username = formData.username;
             const email = formData.email;
             const password = formData.password;
+            const role = formData.role;
+            const img = formData.img;
 
-            await signupApi(name, email, password);
-
+            await signupApi(username, email, password, role, img);
             navigate("/auth/signin");
-        } catch(err) {
-            if(err instanceof Error) {
+        } catch (err) {
+            if (err instanceof Error) {
                 setApiErrors(err.message)
-            }else setApiErrors("Unknown error occured");
+            } else setApiErrors("Unknown error occured");
         }
     };
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
-        const {name, value} = e.target;
-        const updatedFormData = { ...formData, [name]: value};
+
+        if (e.target instanceof HTMLInputElement && e.target.type === "file") {
+            const file = e.target.files?.[0];
+            const updatedFormData = { ...formData, img: file };
+            setFormData(updatedFormData);
+            const newErrors = validateForm(updatedFormData);
+            setErrors((prev) => ({ ...prev, img: newErrors.img }));
+            return;
+        }
+        const { name, value } = e.target as HTMLInputElement | HTMLSelectElement;
+        const updatedFormData = { ...formData, [name]: value };
         setFormData(updatedFormData);
         const newErrors = validateForm(updatedFormData);
         setErrors(newErrors);
@@ -90,26 +106,14 @@ const SignUp: React.FC = () => {
                         </p>
                     )}
                     <div className="space-y-6">
-                        <div className="grid grid-cols-2 gap-5">
-                            <div className="col-span-1">
-                                <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                                    Firtst Name
-                                    <span className="text-error-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <input type="text" value={formData.firstName} onChange={handleChange} required name="firstName" id="firstName" placeholder="Enter your first name" className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20" />
-                                    {errors.firstName && <span>{errors.firstName}</span>}
-                                </div>
-                            </div>
-                            <div className="col-span-1">
-                                <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                                    Last Name
-                                    <span className="text-error-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <input type="text" value={formData.lastName} onChange={handleChange} required name="lastName" id="lastName" placeholder="Enter your last name" className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20" />
-                                    {errors.lastName && <span>{errors.lastName}</span>}
-                                </div>
+                        <div>
+                            <label className="mb-1.5 block text-sm font-medium text-gray-700">
+                                UserName
+                                <span className="text-error-500">*</span>
+                            </label>
+                            <div className="relative">
+                                <input type="text" value={formData.username} onChange={handleChange} required name="username" id="username" placeholder="Enter your username" className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20" />
+                                {errors.username && <span className="text-red-500">{errors.username}</span>}
                             </div>
 
                         </div>
@@ -142,20 +146,41 @@ const SignUp: React.FC = () => {
                                 </span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <label className="flex items-center space-x-3 group cursor-pointer">
-                                <div className="relative w-5 h-5">
-                                    <input type="checkbox" className="w-5 h-5 appearance-none cursor-pointer border border-gray-300 checked:border-transparent rounded-md checked:bg-brand-500 disabled:opacity-60"></input>
-                                    <Check size={14} color="white" className="absolute transform -translate-x-1/2 -translate-y-1/2 pointer-events-none top-1/2 left-1/2" />
-                                </div>
+                        <div>
+                            <label className="mb-1.5 block text-sm font-medium text-gray-700" htmlFor="confirmPassword">
+                                Confirm Password
+                                <span className="text-error-500">*</span>
                             </label>
-                            <p className="inline-block font-normal text-gray-500">
-                                By creating an account means you agree to the
-                                <span className="text-gray-800">Terms and Conditions,</span>
-                                and our
-                                <span className="text-gray-800">Privacy Policy</span>
-                            </p>
+                            <div className="relative">
+                                <div>
+                                    <input type="password" id="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required name="confirmPassword" placeholder="Confirm your password" className="h-11 w-full rounded-lg border appearance-none 
+                                        px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent
+                                        text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20"/>
+                                    {errors.confirmPassword && <span>{errors.confirmPassword}</span>}
+                                </div>
+                                <span className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2">
+                                    <EyeIcon size={24} color="gray" />
+                                </span>
+                            </div>
                         </div>
+                        <div className="flex gap-3    ">
+                            <div className="flex items-center gap-3">
+                                <label htmlFor="role" className="mb-1.5 block text-sm font-medium text-gray-700">
+                                    Role:
+                                </label>
+                                <select id="role" name="role" value={formData.role} onChange={handleChange} className="h-8 rounded-lg border appearance-none px-2 py-0.5 text-xs shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20">
+                                    <option value="USER">User</option>
+                                    <option value="ADMIN">Admin</option>
+                                </select>
+                            </div>
+                            <div className="offset-1 flex items-center gap-3">
+                                <label htmlFor="img" className="block w-full cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Avatar
+                                </label>
+                                <input type="file" id="img" onChange={handleChange} name="img" className="hidden w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-100 file:text-brand-700 hover:file:bg-brand-200" />
+                            </div>
+                        </div>
+
                         <div>
                             <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-lg transition w-full px-4 py-3 text-sm bg-brand-500 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300">
                                 Sign Up
