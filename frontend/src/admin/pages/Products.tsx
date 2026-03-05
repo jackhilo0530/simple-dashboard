@@ -1,10 +1,10 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { ChevronRight, Plus, Search, MoveLeft, MoveRight, Square, Triangle } from 'lucide-react';
-import type { Product } from "../types";
+import type { Product } from "../../types";
 import ProductCard from "../components/ProductCard";
 import { productApi } from "../services/dataService"
-import Select from '../components/Select';
+import Select from '../../components/Select';
 
 const Products: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -68,7 +68,7 @@ const Products: React.FC = () => {
     }
 
     return (
-        <div className='p-6 pb-24 mx-auto max-w-(--breakpoint-2xl) bg-white'>
+        <div className='p-6 pb-24 mx-auto min-h-screen max-w-(--breakpoint-2xl) bg-white'>
             <div className='flex flex-wrap items-center justify-between gap-3 mb-6'>
                 <h2 className='text-xl font-semibold text-gray-800' x-text="pageNamge">Product List</h2>
                 <nav>

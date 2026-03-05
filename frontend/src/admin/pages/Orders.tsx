@@ -1,8 +1,8 @@
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE || "http://localhost:3000";
 import React from "react";
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import type { Order } from "../types";
+import type { Order } from "../../types";
 import { ordersApi } from "../services/ordersService";
 
 const Orders: React.FC = () => {
@@ -94,7 +94,7 @@ const Orders: React.FC = () => {
                                 <tr className="hover:bg-gray-50">
                                     <td className=" py-4 pl-10 text-sm text-gray-600">#{order.id}</td>
                                     <td className="flex items-center gap-3  px-6 py-4 text-sm">
-                                        <img src={`${API_BASE}${order.user.img_url}`} alt="img" className="w-10 h-10 rounded-full" />
+                                        <img src={`${API_BASE_URL}${order.user.img_url}`} alt="img" className="w-10 h-10 rounded-full" />
                                         <div className="text-sm font-medium text-gray-900">
                                             {order.user.username}
                                             <div className="text-xs text-gray-500">{order.user.email}</div>
@@ -139,7 +139,7 @@ const Orders: React.FC = () => {
                                                     {order.items.map((item) => ( // Note: Check if field is 'orderItems' or 'items'
                                                         <div key={item.id} className="mb-3 flex items-center justify-between border-b border-gray-200 pb-3 last:border-0 last:pb-0">
                                                             <div className="flex items-center gap-4">
-                                                                <img src={`${API_BASE}${item.product.img_url}`} alt="" className="h-16 w-16 rounded-md object-cover ring-1 ring-gray-200" />
+                                                                <img src={`${API_BASE_URL}${item.product.img_url}`} alt="" className="h-16 w-16 rounded-md object-cover ring-1 ring-gray-200" />
                                                                 <p className="text-sm font-medium text-gray-900">{item.product.name}</p>
                                                             </div>
                                                             <div className="flex itemx-center gap-10">

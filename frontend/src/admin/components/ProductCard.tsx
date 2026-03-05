@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Square } from "lucide-react";
-import type { Product } from "../types";
+import type { Product } from "../../types";
 
 export default function ProductCard({ product }: { product: Product }) {
 

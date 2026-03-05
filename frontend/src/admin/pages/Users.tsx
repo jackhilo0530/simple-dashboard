@@ -1,9 +1,9 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 import React, { useEffect, useState } from 'react';
-import SearchForm from '../components/SearchForm';
-import Select from '../components/Select';
-import { usersApi } from '../services/authService';
-import { User } from '../types';
+import SearchForm from '../../components/SearchForm';
+import Select from '../../components/Select';
+import { userApi } from '../services/userService';
+import { User } from '../../types';
 
 
 const Users: React.FC = () => {
@@ -18,7 +18,7 @@ const Users: React.FC = () => {
         (async () => {
             try {
                 setError(null);
-                const usersList = await usersApi.list();
+                const usersList = await userApi.list();
                 setUsers(usersList);
             } catch (err) {
                 if (err instanceof Error) {
@@ -48,7 +48,7 @@ const Users: React.FC = () => {
     const onDelete = async (userId: number) => {
         if(window.confirm("Are you sure you want to delete this user?")) {
             try {
-                await usersApi.delete(userId);
+                await userApi.delete(userId);
                 setLoading(true);
             } catch (err) {
                 if (err instanceof Error) {

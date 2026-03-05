@@ -36,7 +36,7 @@ const uploadImage = async (buffer: Buffer, filename: string): Promise<string> =>
     return `/uploads/${filename}`;
 };
 
-export const UserService = {
+export const AuthService = {
     signupUser: async (data: unknown) => {
         const parsed = signupSchema.safeParse(data);
         if (!parsed.success) {
@@ -114,24 +114,6 @@ export const UserService = {
             },
             token,
         };
-    },
-    getAllUsers: async () => {
-        const users = await prisma.user.findMany({
-            select: {
-                id: true,
-                username: true,
-                email: true,
-                role: true,
-                isActive: true,
-                img_url: true,
-            },
-        });
-        return users;
-    },
-    deleteUser: async (userId: number) => {
-        await prisma.user.delete({
-            where: { id: userId },
-        });
     },
 };
 

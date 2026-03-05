@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import z from "zod";
-import { usersApi } from "../services/authService";
+import { authApi } from "../services/authService";
 import { EyeIcon } from "lucide-react";
 
 const signupSchema = z.object({
@@ -56,7 +56,7 @@ const SignUp: React.FC = () => {
             const role = formData.role;
             const img = formData.img;
 
-            await usersApi.signup(username, email, password, role, img);
+            await authApi.signup(username, email, password, role, img);
             navigate("/auth/signin");
         } catch (err) {
             if (err instanceof Error) {

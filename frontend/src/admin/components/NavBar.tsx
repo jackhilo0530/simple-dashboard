@@ -8,10 +8,10 @@ interface NavLinkType {
 };
 
 const navLinks: NavLinkType[] = [
-    { name: "Dashboard", path: "/", icon: <LayoutDashboard size={20} /> },
-    { name: "DummyProducts", path: "/dummyProducts", icon: <ShoppingCart size={20} /> },
-    { name: "Products", path: "/products", icon: <University size={20} /> },
-    { name: "Orders", path: "/orders", icon: <ListOrdered size={20} /> },
+    { name: "Dashboard", path: "/admin", icon: <LayoutDashboard size={20} /> },
+    { name: "DummyProducts", path: "/admin/dummyProducts", icon: <ShoppingCart size={20} /> },
+    { name: "Products", path: "/admin/products", icon: <University size={20} /> },
+    { name: "Orders", path: "/admin/orders", icon: <ListOrdered size={20} /> },
     { name: "Users", path: "/users", icon: <Users size={20} /> },
 ]
 

@@ -1,27 +1,8 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
-
-import type {User} from "../types";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 
-export const usersApi = {
-    async list(): Promise<User[]> {
-        const token = localStorage.getItem("token");
-        const res = await fetch(`${API_BASE_URL}/auth/users`, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "",
-            },
-        });
-
-        const body = await res.json().catch(() => ({}));
-
-
-        if (!res.ok) {
-            throw new Error(body.message || "failed to fetch users");
-        }
-
-        return body;
-    },
+export const authApi = {
+    
     async signup(username: string, email: string, password: string, role: string, img?: File): Promise<{ token: string }> {
         const formData = new FormData();
         formData.append("username", username);
@@ -63,20 +44,4 @@ export const usersApi = {
         return body;
     },
 
-    async delete(userId: number): Promise<void> {
-        const token = localStorage.getItem("token");
-        const res = await fetch(`${API_BASE_URL}/auth/users/${userId}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "",
-            },
-        });
-
-        const body = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-            throw new Error(body.message || "failed to delete user");
-        }
-    },
 };

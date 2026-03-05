@@ -1,5 +1,5 @@
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000/api";
-import type { Product, ShopProduct } from "../types";
+const VITE_API_ADMIN_BASE_URL = import.meta.env.VITE_API_BASE || "http://localhost:3000/api/admin";
+import type { Product, ShopProduct } from "../../types";
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem("token");
@@ -12,7 +12,7 @@ const getAuthHeaders = () => {
 export const productApi = {
     async list(page: number, limit: number, search: string, sortBy: string, order: string, filter: string): Promise<{products: Product[], total: number}> {
         
-        const res =  await fetch(`${API_BASE}/products?sortBy=${sortBy}&order=${order}&search=${search}&page=${page}&limit=${limit}&filter=${filter}`, {
+        const res =  await fetch(`${VITE_API_ADMIN_BASE_URL}/products?sortBy=${sortBy}&order=${order}&search=${search}&page=${page}&limit=${limit}&filter=${filter}`, {
             headers: getAuthHeaders(),
         });
 
@@ -26,7 +26,7 @@ export const productApi = {
     },
 
     async getProduct(id: number): Promise<Product> {
-        const res = await fetch(`${API_BASE}/products/${id}`, {
+        const res = await fetch(`${VITE_API_ADMIN_BASE_URL}/products/${id}`, {
             headers: getAuthHeaders(),
         });
 
@@ -39,7 +39,7 @@ export const productApi = {
     },
 
     async category(): Promise<[]> {
-        const res = await fetch(`${API_BASE}/products/category`, {
+        const res = await fetch(`${VITE_API_ADMIN_BASE_URL}/products/category`, {
             headers: getAuthHeaders(),
         });
 
@@ -53,7 +53,7 @@ export const productApi = {
     },
 
     async delete(id: number): Promise<void> {
-        const res = await fetch(`${API_BASE}/products/${id}`, {
+        const res = await fetch(`${VITE_API_ADMIN_BASE_URL}/products/${id}`, {
             method: "DELETE",
             headers: getAuthHeaders(),
         });
@@ -64,7 +64,7 @@ export const productApi = {
     },
 
     async getProducts(): Promise<ShopProduct[]> {
-        const res = await fetch(`${API_BASE}/shopProducts`, {
+        const res = await fetch(`${VITE_API_ADMIN_BASE_URL}/shopProducts`, {
             headers: getAuthHeaders(),
         });
 
@@ -76,7 +76,7 @@ export const productApi = {
     },
 
     async getProductById(id: number): Promise<ShopProduct> {
-        const res = await fetch(`${API_BASE}/shopProducts/${id}`, {
+        const res = await fetch(`${VITE_API_ADMIN_BASE_URL}/shopProducts/${id}`, {
             headers: getAuthHeaders(),
         });
 
@@ -88,7 +88,7 @@ export const productApi = {
     },
 
     async deleteShopProduct(id: number): Promise<void> {
-        const res = await fetch(`${API_BASE}/shopProducts/${id}`, {
+        const res = await fetch(`${VITE_API_ADMIN_BASE_URL}/shopProducts/${id}`, {
             method: "DELETE",
             headers: getAuthHeaders(),
         });

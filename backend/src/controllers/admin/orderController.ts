@@ -1,6 +1,6 @@
 import { Context } from "hono";
-import {OrderService} from "../services/orderService";
-import { OrderStatus } from "../generated/prisma/enums";
+import {OrderService} from "../../services/admin/orderService";
+import { OrderStatus } from "../../generated/prisma/enums";
 
 export const OrderController = {
     // createOrder: async (c: Context) => {

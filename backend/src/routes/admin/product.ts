@@ -1,5 +1,5 @@
 import {Hono} from "hono";
-import {ProductController} from "../controllers/productController";
+import {ProductController} from "../../controllers/admin/productController";
 
 const product = new Hono();
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import type { Product } from '../types';
+import type { Product } from '../../types';
 import { productApi } from "../services/dataService";
 
 const Product: React.FC = () => {

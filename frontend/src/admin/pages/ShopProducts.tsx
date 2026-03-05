@@ -1,11 +1,11 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { productApi } from '../services/dataService';
-import type { ShopProduct } from '../types';
-import SearchForm from '../components/SearchForm';
-import Select from '../components/Select';
+import type { ShopProduct } from '../../types';
+import SearchForm from '../../components/SearchForm';
+import Select from '../../components/Select';
 
 
 const ShopProducts: React.FC = () => {
