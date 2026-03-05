@@ -1,0 +1,43 @@
+enum ProductStatus {
+    ACTIVE
+    INACTIVE
+}
+
+enum IsDraft {
+    DRAFT
+    PUBLISHED
+}
+
+model Product {
+    id                Int           @id @default(autoincrement())
+    name              String
+    description       String?
+    sku               String        @unique
+    price             Decimal       @db.Decimal(10, 2)
+    complete_at_price Decimal       @db.Decimal(10, 2)
+    stock_quantity    Int
+    img_url           String?
+    category_id       Int
+    category          Category      @relation(fields: [category_id], references: [id], onDelete: Cascade)
+    status            ProductStatus @default(INACTIVE)
+    isDraft           IsDraft       @default(DRAFT)
+    createdAt         DateTime      @default(now())
+    updatedAt         DateTime      @updatedAt
+    orderItems        OrderItem[]
+
+    @@index([name])
+    @@index([category_id])
+    @@index([status])
+    @@index([isDraft])
+    @@index([createdAt])
+    @@map("products")
+}
+
+model Category {
+    id          Int       @id @default(autoincrement())
+    name        String
+    description String?
+    products    Product[]
+
+    @@map("categories")
+}

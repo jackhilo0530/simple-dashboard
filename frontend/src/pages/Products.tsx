@@ -42,6 +42,7 @@ const Products: React.FC = () => {
                 setError(null);
                 const data = await productApi.category();
                 setCategories(data);
+
             }catch (e: any) {
                 setError(e?.message ?? "failed to load categories");
             }
@@ -67,7 +68,7 @@ const Products: React.FC = () => {
     }
 
     return (
-        <div className='p-6 pb-24 mx-auto max-w-(--breakpoint-2xl)'>
+        <div className='p-6 pb-24 mx-auto max-w-(--breakpoint-2xl) bg-white'>
             <div className='flex flex-wrap items-center justify-between gap-3 mb-6'>
                 <h2 className='text-xl font-semibold text-gray-800' x-text="pageNamge">Product List</h2>
                 <nav>

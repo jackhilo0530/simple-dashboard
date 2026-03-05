@@ -3,7 +3,7 @@ import { Link} from 'react-router-dom';
 import z from 'zod';
 import { EyeIcon, Check } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { signinApi } from '../services/authService';
+import { usersApi } from '../services/authService';
 
 const signinSchema = z.object({
     email: z.string().email(),
@@ -43,7 +43,7 @@ const SignIn: React.FC = () => {
 
             const email = formData.email;
             const password = formData.password;
-            const data = await signinApi(email, password);
+            const data = await usersApi.signin(email, password);
             if(!data.token) {
                 setApiErrors("No token in login response.");
                 return;

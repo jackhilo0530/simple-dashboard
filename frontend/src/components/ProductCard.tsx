@@ -17,7 +17,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 </label>
             </td>
             <td className='px-1 py-4 whitespace-pre-line'>
-                <Link to={`/products/${product.id}`} className="product-link">
+                <Link to={`/dummyProducts/${product.id}`} className="product-link">
                     <div className='flex items-center gap-3 text-gray-700'>
                         <div className='h-12 w-12'>
                             {product.images ? (
