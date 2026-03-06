@@ -1,25 +1,31 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { ChevronRight, Plus, Search, SlidersHorizontal, MoveLeft, MoveRight, Square, Triangle } from 'lucide-react';
+import { ChevronRight, Plus, Search, MoveLeft, MoveRight, Square, Triangle } from 'lucide-react';
 import type { Product } from "../types";
 import ProductCard from "../components/ProductCard";
 import { productApi } from "../services/dataService"
+import Select from '../components/Select';
 
 const Products: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
+    const [sortBy, setSortBy] = useState<string>("");
+    const [order, setOrder] = useState("asc");
     const [totalPages, setTotalpages] = useState<number>(0);
+    const [categories, setCategories] = useState<[]>([]);
+    const [categoryItem, setCategoryItem] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
 
     const PRODUCT_PER_PAGE = 10;
+    
 
     useEffect(() => {
         (async () => {
             try {
                 setError(null);
-                const data = await productApi.list(page, PRODUCT_PER_PAGE, search);
+                const data = await productApi.list(page, PRODUCT_PER_PAGE, search, sortBy, order, categoryItem);
                 setProducts(data.products);
                 setTotalpages(Math.ceil(data.total / PRODUCT_PER_PAGE));
             } catch (e: any) {
@@ -28,18 +34,36 @@ const Products: React.FC = () => {
                 setLoading(false);
             }
         })();
-    }, [page, search]);
+    }, [page, search, sortBy, order, categoryItem]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                setError(null);
+                const data = await productApi.category();
+                setCategories(data);
+            }catch (e: any) {
+                setError(e?.message ?? "failed to load categories");
+            }
+        })();
+    }, []);
+
 
     const handlePrevPage = () => {
-        if(page > 0) {
+        if (page > 0) {
             setPage(page - 1)
         }
     };
 
     const handleNextPage = () => {
-        if(page < totalPages - 1) {
+        if (page < totalPages - 1) {
             setPage(page + 1)
         }
+    }
+
+    const handleSelectChange = async (value: string) => {
+        console.log(value);
+        setCategoryItem(value);
     }
 
     return (
@@ -72,19 +96,15 @@ const Products: React.FC = () => {
                     </div>
                 </div>
                 <div className='border-b border-gray-200 px-5 py-4'>
-                    <div className='flex gap-3 justify-between'>
-                        <div className='relative flex-auto'>
+                    <div className='flex gap-3 justify-start'>
+                        <div className='relative flex'>
                             <span className='absolute top-1/2 left-4 -translate-y-1/2 text-gray-500'>
                                 <Search width="20" height="20" viewBox="0 0 20 20" />
                             </span>
                             <input type="text" value={search} placeholder='Search...' onChange={(e) => setSearch(e.target.value)} className='shadow-sm focus:border-brand-300 focus:ring-brand-500/10 h-11 w-[300px] rounded-lg border border-gray-300 bg-transparent py-2.5 pr-4 pl-11 text-sm text-gray-800 placeholder:text-tray-400 focus:ring-3 focus:outline-none' />
                         </div>
-                        <div className='relative'>
-                            <button className='flex items-center shadow-theme-xs h-11 justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 w-auto min-w-[100px]'>
-                                <SlidersHorizontal width="15" height="15" fill="none" />
-                                Filter
-                            </button>
-                        </div>
+                        <Select options={categories} placeholder="Select Category" onChange={handleSelectChange}/>
+                        
                     </div>
                 </div>
                 <div className='overflow-x-auto'>
@@ -104,7 +124,7 @@ const Products: React.FC = () => {
                                             </span>
                                         </label>
                                     </th>
-                                    <th className='cursor-pointer px-1 whitespace-nowrap py-4 text-left text-xs font-medium text-gray-500'>
+                                    <th onClick={() => { setSortBy("title"); setOrder((order === "asc") ? "desc" : "asc") }} className='cursor-pointer px-1 whitespace-nowrap py-4 text-left text-xs font-medium text-gray-500'>
                                         <div className='flex items-center gap-3'>
                                             <p className='text-xs font-medium text-gray-500'>Products</p>
                                             <span className='flex flex-col gap-0.5'>
@@ -113,7 +133,7 @@ const Products: React.FC = () => {
                                             </span>
                                         </div>
                                     </th>
-                                    <th className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
+                                    <th onClick={() => { setSortBy("description"); setOrder((order === "asc") ? "desc" : "asc") }} className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
                                         <div className='flex items-center gap-3'>
                                             <p className='text-xs font-medium text-gray-500'>Description</p>
                                             <span className='flex flex-col gap-0.5'>
@@ -122,7 +142,7 @@ const Products: React.FC = () => {
                                             </span>
                                         </div>
                                     </th>
-                                    <th className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
+                                    <th onClick={() => { setSortBy("price"); setOrder((order === "asc") ? "desc" : "asc") }} className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
                                         <div className='flex items-center gap-3'>
                                             <p className='text-xs font-medium text-gray-500'>Price</p>
                                             <span className='flex flex-col gap-0.5'>
@@ -131,7 +151,7 @@ const Products: React.FC = () => {
                                             </span>
                                         </div>
                                     </th>
-                                    <th className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
+                                    <th onClick={() => { setSortBy("category"); setOrder((order === "asc") ? "desc" : "asc") }} className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
                                         <div className='flex items-center gap-3'>
                                             <p className='text-xs font-medium text-gray-500'>Category</p>
                                             <span className='flex flex-col gap-0.5'>
@@ -164,7 +184,7 @@ const Products: React.FC = () => {
                     </button>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
