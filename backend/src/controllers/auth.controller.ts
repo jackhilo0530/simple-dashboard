@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret";
 export const AuthController = {
   signup: async (c: Context) => {
     try {
-      const body = await c.req.json();
+      const body = await c.req.parseBody();
       const user = await UserService.signupUser(body);
       return c.json(user, 201);
     }catch (err: any) {
@@ -50,7 +50,7 @@ export const AuthController = {
       if(err.type === "authentication") {
         return c.json(
           {
-            message: "email or password doen't exist",
+            message: "Email or password doesn't exist",
             errors: err.errors,
           },
           401

@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "rootDir": "src",
+    "paths": {
+      "@prisma/client": ["./src/generated/prisma"]
+    },
     "target": "ES2022",
     "module": "CommonJS",
     "moduleResolution": "Node",
