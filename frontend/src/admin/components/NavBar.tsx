@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingCart, Users, University, ListOrdered } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Users, University, ListOrdered, Motorbike } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 interface NavLinkType {
@@ -12,6 +12,7 @@ const navLinks: NavLinkType[] = [
     { name: "DummyProducts", path: "/admin/dummyProducts", icon: <ShoppingCart size={20} /> },
     { name: "Products", path: "/admin/products", icon: <University size={20} /> },
     { name: "Orders", path: "/admin/orders", icon: <ListOrdered size={20} /> },
+    { name: "Shipments", path: "/admin/shipments", icon: <Motorbike size={20} /> },
     { name: "Users", path: "/users", icon: <Users size={20} /> },
 ]
 
