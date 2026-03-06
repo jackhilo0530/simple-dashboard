@@ -1,7 +1,191 @@
 import React from 'react';
+import { useEffect, useState } from 'react';
+import { ChevronRight, Plus, Search, MoveLeft, MoveRight, Square, Triangle } from 'lucide-react';
+import type { Product } from "../types";
+import ProductCard from "../components/ProductCard";
+import { productApi } from "../services/dataService"
+import Select from '../components/Select';
 
 const Products: React.FC = () => {
-    return <div>Products Page</div>
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState<number>(0);
+    const [search, setSearch] = useState<string>("");
+    const [sortBy, setSortBy] = useState<string>("");
+    const [order, setOrder] = useState("asc");
+    const [totalPages, setTotalpages] = useState<number>(0);
+    const [categories, setCategories] = useState<[]>([]);
+    const [categoryItem, setCategoryItem] = useState<string>("");
+    const [error, setError] = useState<string | null>(null);
+
+    const PRODUCT_PER_PAGE = 10;
+    
+
+    useEffect(() => {
+        (async () => {
+            try {
+                setError(null);
+                const data = await productApi.list(page, PRODUCT_PER_PAGE, search, sortBy, order, categoryItem);
+                setProducts(data.products);
+                setTotalpages(Math.ceil(data.total / PRODUCT_PER_PAGE));
+            } catch (e: any) {
+                setError(e?.message ?? "failed to load products");
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, [page, search, sortBy, order, categoryItem]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                setError(null);
+                const data = await productApi.category();
+                setCategories(data);
+            }catch (e: any) {
+                setError(e?.message ?? "failed to load categories");
+            }
+        })();
+    }, []);
+
+
+    const handlePrevPage = () => {
+        if (page > 0) {
+            setPage(page - 1)
+        }
+    };
+
+    const handleNextPage = () => {
+        if (page < totalPages - 1) {
+            setPage(page + 1)
+        }
+    }
+
+    const handleSelectChange = async (value: string) => {
+        console.log(value);
+        setCategoryItem(value);
+    }
+
+    return (
+        <div className='p-6 pb-24 mx-auto max-w-(--breakpoint-2xl)'>
+            <div className='flex flex-wrap items-center justify-between gap-3 mb-6'>
+                <h2 className='text-xl font-semibold text-gray-800' x-text="pageNamge">Product List</h2>
+                <nav>
+                    <ol className='flex items-center gap-1.5'>
+                        <li>
+                            <a href="/" className='inline-flex items-center gap-1.5 text-sm text-gray-500' data-discover="true">
+                                Home
+                                <ChevronRight width="17" height="16" />
+                            </a>
+                        </li>
+                        <li className='text-sm text-gray-800'>Product List</li>
+                    </ol>
+                </nav>
+            </div>
+            <div className='rounded-xl border border-gray-200 bg-white'>
+                <div className='flex flex-row items-center justify-between gap-5 border-b border-gray-200 px-5 py-4'>
+                    <div>
+                        <h3 className='text-lg font-semibold text-gray-800'>Products List</h3>
+                        <p className='text-sm text-gray-500'>Track your store's progress to boost your sales.</p>
+                    </div>
+                    <div>
+                        <a href="/products" className='bg-brand-500 shadow-sm hover inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition hover:bg-brand-600'>
+                            <Plus />
+                            Add Product
+                        </a>
+                    </div>
+                </div>
+                <div className='border-b border-gray-200 px-5 py-4'>
+                    <div className='flex gap-3 justify-start'>
+                        <div className='relative flex'>
+                            <span className='absolute top-1/2 left-4 -translate-y-1/2 text-gray-500'>
+                                <Search width="20" height="20" viewBox="0 0 20 20" />
+                            </span>
+                            <input type="text" value={search} placeholder='Search...' onChange={(e) => setSearch(e.target.value)} className='shadow-sm focus:border-brand-300 focus:ring-brand-500/10 h-11 w-[300px] rounded-lg border border-gray-300 bg-transparent py-2.5 pr-4 pl-11 text-sm text-gray-800 placeholder:text-tray-400 focus:ring-3 focus:outline-none' />
+                        </div>
+                        <Select options={categories} placeholder="Select Category" onChange={handleSelectChange}/>
+                        
+                    </div>
+                </div>
+                <div className='overflow-x-auto'>
+                    {loading && <p className="muted">loading...</p>}
+                    {error && <p className="error">{error}</p>}
+                    {products.length > 0 && (
+                        <table className='w-full'>
+                            <thead>
+                                <tr className='border-b border-gray-200 text-center'>
+                                    <th className='w-14 px-5 py-4 text-left whitespace-nowrap'>
+                                        <label className='cursor-pointer text-sm font-medium text-gray-700 select-none'>
+                                            <input className='sr-only' type="checkbox" />
+                                            <span className='flex h-4 w-4 items-center justify-center rounded-sm border-[1.25px] bg-transparent border-gray-300'>
+                                                <span className='opacity-0'>
+                                                    <Square />
+                                                </span>
+                                            </span>
+                                        </label>
+                                    </th>
+                                    <th onClick={() => { setSortBy("title"); setOrder((order === "asc") ? "desc" : "asc") }} className='cursor-pointer px-1 whitespace-nowrap py-4 text-left text-xs font-medium text-gray-500'>
+                                        <div className='flex items-center gap-3'>
+                                            <p className='text-xs font-medium text-gray-500'>Products</p>
+                                            <span className='flex flex-col gap-0.5'>
+                                                <Triangle width="13" height="8" className="text-gray-500" />
+                                                <Triangle width="13" height="8" className="text-gray-500 rotate-180" />
+                                            </span>
+                                        </div>
+                                    </th>
+                                    <th onClick={() => { setSortBy("description"); setOrder((order === "asc") ? "desc" : "asc") }} className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
+                                        <div className='flex items-center gap-3'>
+                                            <p className='text-xs font-medium text-gray-500'>Description</p>
+                                            <span className='flex flex-col gap-0.5'>
+                                                <Triangle width="13" height="8" className="text-gray-500" />
+                                                <Triangle width="13" height="8" className="text-gray-500 rotate-180" />
+                                            </span>
+                                        </div>
+                                    </th>
+                                    <th onClick={() => { setSortBy("price"); setOrder((order === "asc") ? "desc" : "asc") }} className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
+                                        <div className='flex items-center gap-3'>
+                                            <p className='text-xs font-medium text-gray-500'>Price</p>
+                                            <span className='flex flex-col gap-0.5'>
+                                                <Triangle width="13" height="8" className="text-gray-500" />
+                                                <Triangle width="13" height="8" className="text-gray-500 rotate-180" />
+                                            </span>
+                                        </div>
+                                    </th>
+                                    <th onClick={() => { setSortBy("category"); setOrder((order === "asc") ? "desc" : "asc") }} className='cursor-pointer px-1 py-4 whitespace-nowrap text-left text-xs font-medium text-gray-500'>
+                                        <div className='flex items-center gap-3'>
+                                            <p className='text-xs font-medium text-gray-500'>Category</p>
+                                            <span className='flex flex-col gap-0.5'>
+                                                <Triangle width="13" height="8" className="text-gray-500" />
+                                                <Triangle width="13" height="8" className="text-gray-500 rotate-180" />
+                                            </span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className='divide-x divide-y divide-gray-200'>
+                                {products.map((p) => (
+                                    <ProductCard key={p.id} product={p} />
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                </div>
+                <div className='flex w-auto items-center justify-end border-t border-gray-200 gap-2 rounded-none bg-transparent p-4'>
+                    <button onClick={handlePrevPage} disabled={page === 0} className='shadow-sm flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2.5 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50'>
+                        <span>
+                            <MoveLeft size={20} />
+                        </span>
+                    </button>
+                    <span>{`Page ${page + 1} of ${totalPages}`}</span>
+                    <button onClick={handleNextPage} disabled={page === (totalPages - 1)} className='shadow-sm flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2.5 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50'>
+                        <span>
+                            <MoveRight size={20} />
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div >
+    )
 }
 
 export default Products;

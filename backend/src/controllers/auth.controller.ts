@@ -1,40 +1,63 @@
 import type { Context } from "hono";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { prisma } from "../db/prisma";
+import {UserService} from "../services/user.service";
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 export const AuthController = {
   signup: async (c: Context) => {
-    const { email, password, name } = await c.req.json();
+    try {
+      const body = await c.req.parseBody();
+      const user = await UserService.signupUser(body);
+      return c.json(user, 201);
+    }catch (err: any) {
+      if(err.type === "validation") {
+        return c.json(
+          {
+            message: "validation error",
+            errors: err.errors,
+          },
+          400
+        );
+      }
+      if(err.type == "duplicate") {
+        return c.json(
+          {
+            message: err.message || "user already exists",
+          },
+          409
+        );
+      }
 
-    if (!email || !password || !name) return c.json({ error: "Email and password required" }, 400);
-
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) return c.json({ error: "Email already exists" }, 400);
-
-    const hashed = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({ data: { name, email, password: hashed } });
-
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "7d" });
-
-    return c.json({ id: user.id, email: user.email, token });
+      return c.json({message: "internal server error"}, 500);
+    }
   },
 
-  login: async (c: Context) => {
-    const { email, password } = await c.req.json();
+  signin: async (c: Context) => {
+    try {
+      const body = await c.req.json();
+      const user = await UserService.signinUser(body);
+      return c.json(user, 201);
+    } catch(err: any) {
+      if(err.type === "validation") {
+        return c.json(
+          {
+            message: "validation error",
+            errors: err.errors,
+          },
+          400
+        );
+      }
+      if(err.type === "authentication") {
+        return c.json(
+          {
+            message: "Email or password doesn't exist",
+            errors: err.errors,
+          },
+          401
+        );
+      }
 
-    if (!email || !password) return c.json({ error: "Email and password required" }, 400);
-
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return c.json({ error: "User not found" }, 404);
-
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return c.json({ error: "Invalid credentials" }, 401);
-
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "7d" });
-
-    return c.json({ id: user.id, email: user.email, token });
-  },
+      return c.json({message: "internal server error"}, 500);
+    }
+  }
 };

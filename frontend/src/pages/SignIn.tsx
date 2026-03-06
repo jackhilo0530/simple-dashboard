@@ -1,7 +1,73 @@
-import React from 'react';
-import { EyeIcon, Check} from 'lucide-react';
+import React, { useState } from 'react';
+import { Link} from 'react-router-dom';
+import z from 'zod';
+import { EyeIcon, Check } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import { signinApi } from '../services/authService';
+
+const signinSchema = z.object({
+    email: z.string().email(),
+    password: z.string().min(6),
+});
+
+type FormData = z.infer<typeof signinSchema>;
+type FormErrors = Partial<Record<keyof FormData, string[]>>;
 
 const SignIn: React.FC = () => {
+    const [formData, setFormData] = useState<FormData>({
+        email: "",
+        password: "",
+    });
+    const [errors, setErrors] = useState<FormErrors>({});
+    const [apiErrors, setApiErrors] = useState("");
+    const auth = useAuth();
+
+    const validateForm = (data: FormData, field?: keyof FormData): FormErrors => {
+        try{
+            signinSchema.parse(data);
+            return field ? {[field]: []} : {};
+        }catch(error) {
+            if(error instanceof z.ZodError) {
+                return error.flatten().fieldErrors;
+            }
+            return {};
+        }
+    };
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        try {
+
+            const newErrors = validateForm(formData);
+            setErrors(newErrors);
+
+            const email = formData.email;
+            const password = formData.password;
+            const data = await signinApi(email, password);
+            if(!data.token) {
+                setApiErrors("No token in login response.");
+                return;
+            }
+            await auth?.signin(data.token);
+
+        } catch(err) {
+            if(err instanceof Error) {
+                setApiErrors(err.message)
+            }else setApiErrors("Unknown error occured");
+        }
+    };
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+        const {name, value} = e.target;
+        const updatedFormData = { ...formData, [name]: value};
+        setFormData(updatedFormData);
+        const newErrors = validateForm(updatedFormData);
+        setErrors(newErrors);
+    }
+
+
     return (
         <div>
             <div className='mb-8'>
@@ -17,7 +83,12 @@ const SignIn: React.FC = () => {
                         <span className=' text-gray-400 bg-white px-5 py-2'>Or</span>
                     </div>
                 </div>
-                <form>
+                <form onSubmit={handleSubmit}>
+                    {apiErrors && (
+                        <p className='text-red-600 text-center font-semibold'>
+                            {apiErrors}
+                        </p>
+                    )}
                     <div className='space-y-6'>
                         <div>
                             <label className='mb-1.5 block text-sm font-medium text-gray-700'>
@@ -25,9 +96,10 @@ const SignIn: React.FC = () => {
                                 <span className='text-error-500'>*</span>
                             </label>
                             <div className='relative'>
-                                <input type="text" placeholder='info@gmail.com' className='h-11 w-full rounded-lg border appearance-none 
+                                <input type="text" value={formData.email} onChange={handleChange} required placeholder='info@gmail.com' name="email" className='h-11 w-full rounded-lg border appearance-none 
                                         px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent
                                         text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20'/>
+                                {errors.email && <span>{errors.email}</span>}
                             </div>
                         </div>
                         <div>
@@ -37,12 +109,13 @@ const SignIn: React.FC = () => {
                             </label>
                             <div className='relative'>
                                 <div>
-                                    <input type="password" placeholder='Enter your password' className='h-11 w-full rounded-lg border appearance-none 
+                                    <input type="password" value={formData.password} onChange={handleChange} required name="password" placeholder='Enter your password' className='h-11 w-full rounded-lg border appearance-none 
                                         px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 bg-transparent
                                         text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20'/>
+                                    {errors.password && <span>{errors.password}</span>}
                                 </div>
                                 <span className='absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2'>
-                                    <EyeIcon size={24} color="gray"/>
+                                    <EyeIcon size={24} color="gray" />
                                 </span>
                             </div>
                         </div>
@@ -59,16 +132,16 @@ const SignIn: React.FC = () => {
                             <a className='text-sm text-brand-500' href="#" data-discover="true">Forgot password?</a>
                         </div>
                         <div>
-                            <button className='inline-flex items-center justify-center gap-2 rounded-lg transition w-full px-4 py-3 text-sm bg-brand-500 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300'>
-                                Sign in
+                            <button type="submit" className='inline-flex items-center justify-center gap-2 rounded-lg transition w-full px-4 py-3 text-sm bg-brand-500 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300'>
+                                Sign In
                             </button>
                         </div>
                     </div>
                 </form>
                 <div className='mt-5'>
                     <p className='text-sm font-normal text-start text-gray-700'>
-                        Don't have an account? 
-                        <a className='text-brand-500 hover:text-brand-600' href="#" data-discover="true">Sign Up</a>
+                        Don't have an account?
+                        <Link className='text-brand-500 hover:text-brand-600' data-discover="true" to="/auth/signup">Sign Up</Link>
                     </p>
                 </div>
             </div>
