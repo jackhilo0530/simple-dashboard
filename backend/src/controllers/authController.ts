@@ -1,5 +1,5 @@
 import type { Context } from "hono";
-import { AuthService } from "../services/authService";
+import { UserService } from "../services/userService";
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
@@ -7,7 +7,7 @@ export const AuthController = {
   signup: async (c: Context) => {
     try {
       const body = await c.req.parseBody();
-      const user = await AuthService.signupUser(body);
+      const user = await UserService.signupUser(body);
       return c.json(user, 201);
     } catch (err: any) {
       if (err.type === "validation") {
@@ -35,7 +35,7 @@ export const AuthController = {
   signin: async (c: Context) => {
     try {
       const body = await c.req.json();
-      const user = await AuthService.signinUser(body);
+      const user = await UserService.signinUser(body);
       return c.json(user, 201);
     } catch (err: any) {
       if (err.type === "validation") {

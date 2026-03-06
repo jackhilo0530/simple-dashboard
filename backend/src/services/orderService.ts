@@ -1,6 +1,6 @@
 import { create } from "node:domain";
-import { prisma } from "../../lib/prisma";
-import { OrderStatus } from "../../generated/prisma/enums";
+import { prisma } from "../lib/prisma";
+import { OrderStatus } from "../generated/prisma/enums";
 
 export const OrderService = {
     getOrders: async () => {

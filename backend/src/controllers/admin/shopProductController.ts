@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { ShopProductService } from "../../services/admin/shopProduct";
+import { ShopProductService } from "../../services/shopProduct";
 
 
 export const ShopProductController = {

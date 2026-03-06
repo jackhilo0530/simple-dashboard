@@ -1,6 +1,6 @@
 
 import { Context } from "hono";
-import { UserService } from "../../services/admin/userService";
+import { UserService } from "../../services/userService";
 
 export const UserController = {
     getUsers: async (c: Context) => {

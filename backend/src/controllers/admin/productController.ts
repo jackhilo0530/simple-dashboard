@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { fetchProducts, fetchProduct, fetchCategory} from "../../services/admin/dumyStore";
+import { fetchProducts, fetchProduct, fetchCategory} from "../../services/dumyStore";
 
 const parseId = (c: Context) => {
     const id = Number(c.req.param("id"));

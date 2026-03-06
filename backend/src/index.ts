@@ -5,10 +5,7 @@ import { cors } from "hono/cors";
 import {jwt} from "hono/jwt";
 import dotenv from "dotenv";
 import auth from "./routes/auth";
-import user from "./routes/admin/user";
-import product from "./routes/admin/product";
-import shopProduct from "./routes/admin/shopProduct";
-import order from "./routes/admin/order";
+import admin from "./routes/admin/admin";
 
 
 dotenv.config();
@@ -27,10 +24,8 @@ app.route("auth", auth);
 
 app.use("/api/*", jwt({ secret: process.env.JWT_SECRET || "secret", alg: "HS256" }));
 
-app.route("/api/admin/users", user);
-app.route("/api/admin/products", product);
-app.route("/api/admin/shopProducts", shopProduct);
-app.route("/api/admin/orders", order);
+app.route("/api/admin", admin);
+
 
 app.use("/uploads/*", serveStatic({root: './public', rewriteRequestPath: (path) => path.replace("/api", "") }));
 
