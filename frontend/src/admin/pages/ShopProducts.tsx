@@ -74,7 +74,7 @@ const ShopProducts: React.FC = () => {
                         {products.length > 0 ? products.map((product) => (
                             <tr key={product.id} className='hover:bg-gray-50'>
                                 <td className="border-b border-gray-200 px-6 py-4">
-                                    <Link to={`/products/${product.id}`}>
+                                    <Link to={`/admin/products/${product.id}`}>
                                         <div className='flex items-center gap-3'>
                                             <img src={product.img_url ? `${API_BASE_URL}${product.img_url}` : "https://via.placeholder.com/40"} alt={product.name} className='h-12 w-12 rounded-lg object-cover' />
                                             <span className='font-medium text-gray-900'>{product.name}</span>

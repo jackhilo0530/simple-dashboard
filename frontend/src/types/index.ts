@@ -61,3 +61,14 @@ export interface Order {
     items: OrderItem[];
     createdAt: string;
 }
+
+export interface Shipment {
+    id: number;
+    order_id: number;
+    order: Order;
+    tracking_number: string;
+    carrier: string;
+    status: string;
+    createdAt: string;
+    shipped_at: string;
+}

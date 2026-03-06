@@ -52,9 +52,9 @@ const Orders: React.FC = () => {
     const updateStatus = async (id: number, currentStatus: string) => {
         const nextStatus = {
             PENDING: "SHIPPED",
-            SHIPPED: "DELIVERED",
+            SHIPPED: "CANCELLED",
             DELIVERED: "DELIVERED",
-            CANCELLED: "CANCELLED",
+            CANCELLED: "PENDING",
         }[currentStatus] || "PENDING";
 
         try {
