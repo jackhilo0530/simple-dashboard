@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { fetchProducts, fetchProduct} from "../services/dumyStore";
+import { fetchProducts, fetchProduct, fetchCategory} from "../services/dumyStore";
 
 const parseId = (c: Context) => {
     const id = Number(c.req.param("id"));
@@ -18,8 +18,12 @@ export const ProductController = {
             const page = Number(c.req.query("page") || 0);
             const limit = Number(c.req.query("limit") || PRODUCTS_PER_PAGE);
             const skip = page * limit;
+            const search = String(c.req.query("search") || "");
+            const sortBy = String(c.req.query("sortBy") || "");
+            const order = String(c.req.query("order") || "");
+            const filter = String(c.req.query("filter") || "");
 
-            const products = await fetchProducts(skip, limit);
+            const products = await fetchProducts(skip, limit, search, sortBy, order,filter);
             return c.json(products);
         } catch (error) {
             return c.json({ message: "internal server error" }, 500)
@@ -37,7 +41,20 @@ export const ProductController = {
 
             return c.json(product);
         } catch (error) {
-            return c.json({ message: "internal id" }, 400)
+            return c.json({ message: "internal id" }, 500);
+        }
+    },
+    getProductsCategory: async (c: Context) => {
+        try {
+            const categories = await fetchCategory();
+            
+            if(!categories) {
+                return c.json({message: "category not found"}, 404);
+            }
+
+            return c.json(categories);
+        }catch(error) {
+            return c.json({message: "internal server error"}, 500);
         }
     }
 }
