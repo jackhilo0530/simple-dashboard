@@ -1,3 +1,28 @@
+export interface User {
+    id: number;
+    username: string;
+    email: string;
+    role: string;
+    isActive: boolean;
+    img_url?: string;
+}
+
+export interface ShopProduct {
+    id: number;
+    name: string;
+    description: string;
+    category_id: number;
+    category: string;
+    status: string;
+    isDraft: boolean;
+    sku: string;
+    price: number;
+    complete_at_price?: number;
+    stock_quantity: number;
+    img_url?: string;
+    
+}
+
 export interface Product {
     id: number;
     title: string;
@@ -23,14 +48,16 @@ export interface OrderItem {
     id: string;
     productId: number;
     quantity: number;
-    title: string;
-    image: string;
-    unitPrice: number;
-    lineTotal: number;
+    price: number;
+    product: ShopProduct;
 }
 
 export interface Order {
-    id: string;
-    total: number;
+    id: number;
+    userId: number;
+    user: User;
+    total_price: number;
+    status: string;
     items: OrderItem[];
+    createdAt: string;
 }

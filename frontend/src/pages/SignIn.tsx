@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Link} from 'react-router-dom';
+import { Link, Navigate} from 'react-router-dom';
 import z from 'zod';
 import { EyeIcon, Check } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { signinApi } from '../services/authService';
+import { authApi } from '../services/authService';
 
 const signinSchema = z.object({
     email: z.string().email(),
@@ -43,12 +43,13 @@ const SignIn: React.FC = () => {
 
             const email = formData.email;
             const password = formData.password;
-            const data = await signinApi(email, password);
+            const data = await authApi.signin(email, password);
             if(!data.token) {
                 setApiErrors("No token in login response.");
                 return;
             }
             await auth?.signin(data.token);
+            <Navigate to="/admin" replace />
 
         } catch(err) {
             if(err instanceof Error) {

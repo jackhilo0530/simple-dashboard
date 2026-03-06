@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../index.css"
 
 interface SelectProps {
-    options: [];
+    options: string[];
     placeholder?: string;
     onChange: (value: string) => void;
     className?: string;
@@ -15,6 +15,7 @@ const Select: React.FC<SelectProps> = ({
     onChange,
     className = "",
     defaultValue = "",
+
 }) => {
     // Manage the selected value
     const [selectedValue, setSelectedValue] = useState<string>(defaultValue);

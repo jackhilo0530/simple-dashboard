@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import type { Product } from '../types';
+import type { Product } from '../../types';
 import { productApi } from "../services/dataService";
 
 const Product: React.FC = () => {
@@ -33,7 +33,7 @@ const Product: React.FC = () => {
 
     return (
         <div>
-            <Link to="/products" className="inline-flex gap-2 px-1 py-3 mt-4 ml-3 mb-2 text-lg text-gray-800 text-center font-medium rounded-lg bg-gray-300 shadow-xs w-20">← back</Link>
+            <Link to="/dummyProducts" className="inline-flex gap-2 px-1 py-3 mt-4 ml-3 mb-2 text-lg text-gray-800 text-center font-medium rounded-lg bg-gray-300 shadow-xs w-20">← back</Link>
             <div className='flex flex-row gap-6 items-center rounded-x1 border border-gray-200 bg-white p-6'>
                 <div className='overflow-hidden rounded-lg'>
                     <img className="overflow-hidden rounded-lg max-w-full max-h-[340px]" src={product.images[0]} alt="" />

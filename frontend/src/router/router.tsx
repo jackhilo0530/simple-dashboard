@@ -1,19 +1,30 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
+import Users from '../admin/pages/Users';
 import NotFound from '../pages/NotFound';
-import Dashboard from '../pages/Dashboard';
+import Dashboard from '../admin/pages/Dashboard';
 import MainLayout from '../layout';
-import Products from '../pages/Products';
-import Product from '../pages/Product';
+import ShopProducts from '../admin/pages/ShopProducts';
+import ShopProduct from '../admin/pages/ShopProduct';
+import Products from '../admin/pages/Products';
+import Product from '../admin/pages/Product';
+import Orders from '../admin/pages/Orders';
+// import Order from '../pages/Order';
 import AuthLayout from '../layout/AuthLayout';
 import { AuthProvider } from '../providers';
 import { ProtectedRoute } from './ProtectedRoute';
+
+
 
 const router = createBrowserRouter([
   {
     Component: AuthProvider,
     children: [
+      {
+        path: '/',
+        element: <Navigate to="/admin" replace />
+      },
       {
         path: '/auth',
         element: <AuthLayout />,
@@ -38,23 +49,74 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <Dashboard />
+                element: <Navigate to="/admin" replace />
               },
               {
-                path: 'products',
+                path: '/admin',
                 children: [
                   {
                     index: true,
-                    element: <Products />,
+                    element: <Dashboard />
+                    
+                  },
+
+                  {
+                    path: 'products',
+                    children: [
+                      {
+                        index: true,
+                        element: <ShopProducts />,
+                      },
+                      {
+                        path: ':id',
+                        element: <ShopProduct />
+                      }
+                    ]
                   },
                   {
-                    path: ':id',
-                    element: <Product />
+                    path: 'dummyProducts',
+                    children: [
+                      {
+                        index: true,
+                        element: <Products />,
+                      },
+                      {
+                        path: ':id',
+                        element: <Product />
+                      }
+                    ]
+                  },
+                  {
+                    path: 'orders',
+                    children: [
+                      {
+                        index: true,
+                        element: <Orders />,
+                      },
+                      // {
+                      //   path: ':id',
+                      //   element: <Order />
+                      // }
+                    ]
                   }
+                ]
+
+              },
+              {
+                path: '/users',
+                children: [
+                  {
+                    index: true,
+                    element: <Users />
+                  },
+                  // {
+                  //   path: ':id',
+                  //   element: <User />
+                  // }
                 ]
               }
             ]
-          }
+          },
         ]
       },
       {

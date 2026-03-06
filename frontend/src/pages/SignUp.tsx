@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import z from "zod";
-import { signupApi } from "../services/authService";
+import { authApi } from "../services/authService";
 import { EyeIcon } from "lucide-react";
 
 const signupSchema = z.object({
@@ -56,7 +56,7 @@ const SignUp: React.FC = () => {
             const role = formData.role;
             const img = formData.img;
 
-            await signupApi(username, email, password, role, img);
+            await authApi.signup(username, email, password, role, img);
             navigate("/auth/signin");
         } catch (err) {
             if (err instanceof Error) {
@@ -178,6 +178,7 @@ const SignUp: React.FC = () => {
                                     Avatar
                                 </label>
                                 <input type="file" id="img" onChange={handleChange} name="img" className="hidden w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-100 file:text-brand-700 hover:file:bg-brand-200" />
+                                {errors.img && <span>{errors.img}</span>}
                             </div>
                         </div>
 

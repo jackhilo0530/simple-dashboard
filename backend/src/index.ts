@@ -1,9 +1,11 @@
 import { Hono } from "hono";
 import { serve } from "@hono/node-server";
-import { cors } from "hono/cors"
+import {serveStatic} from "@hono/node-server/serve-static";
+import { cors } from "hono/cors";
+import {jwt} from "hono/jwt";
 import dotenv from "dotenv";
 import auth from "./routes/auth";
-import product from "./routes/product";
+import admin from "./routes/admin/admin";
 
 
 dotenv.config();
@@ -17,9 +19,16 @@ app.use(
   })
 );
 
-app.route("/api/auth", auth);
 
-app.route("/api/products", product);
+app.route("auth", auth);
+
+app.use("/api/*", jwt({ secret: process.env.JWT_SECRET || "secret", alg: "HS256" }));
+
+app.route("/api/admin", admin);
+
+
+app.use("/uploads/*", serveStatic({root: './public', rewriteRequestPath: (path) => path.replace("/api", "") }));
+
 
 const port = 3000;
 
