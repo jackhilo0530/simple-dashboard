@@ -74,3 +74,12 @@ export interface Shipment {
     createdAt: string;
     shipped_at: string;
 }
+
+export interface Chat {
+    id: number;
+    user_id: number;
+    user: User;
+    receiver_id: number;
+    message: string;
+    createdAt: string;
+}

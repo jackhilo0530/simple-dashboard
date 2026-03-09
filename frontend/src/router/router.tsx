@@ -12,6 +12,7 @@ import Product from '../admin/pages/Product';
 import Orders from '../admin/pages/Orders';
 // import Order from '../pages/Order';
 import Shipments from '../admin/pages/Shipments';
+import Charts from '../admin/pages/Charts';
 import AuthLayout from '../layout/AuthLayout';
 import { AuthProvider } from '../providers';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -58,7 +59,7 @@ const router = createBrowserRouter([
                   {
                     index: true,
                     element: <Dashboard />
-                    
+
                   },
 
                   {
@@ -112,6 +113,10 @@ const router = createBrowserRouter([
                       //   element: <Shipment />
                       // }
                     ]
+                  },
+                  {
+                    path: 'chats',
+                    element: <Charts />,
                   }
                 ]
 

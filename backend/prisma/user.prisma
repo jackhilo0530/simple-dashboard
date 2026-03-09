@@ -15,6 +15,7 @@ model User {
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
     orders        Order[]
+    chats         Chat[]
 
     @@map("users") // This ensures the DB table is named "users"
 }
