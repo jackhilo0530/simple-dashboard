@@ -124,6 +124,8 @@ export const UserService = {
                 role: true,
                 isActive: true,
                 img_url: true,
+                isLoggedIn: true,
+                createdAt: true,
             },
         });
         return users;

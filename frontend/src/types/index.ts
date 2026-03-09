@@ -5,6 +5,8 @@ export interface User {
     role: string;
     isActive: boolean;
     img_url?: string;
+    isLoggedIn?: boolean;
+    createdAt: string;
 }
 
 export interface ShopProduct {
