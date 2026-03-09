@@ -1,5 +1,6 @@
 import { Context } from "hono";
 import {OrderService} from "../../services/orderService";
+import { ShipmentService } from "../../services/shipmentService";
 import { OrderStatus } from "../../generated/prisma/enums";
 
 export const OrderController = {
@@ -82,7 +83,12 @@ export const OrderController = {
                 return c.json({ message: "invalid order id" }, 400);
             }
             const body = await c.req.json();
-            console.log("Received body:", {id, status: body.status});
+            if(body.status === OrderStatus.SHIPPED) {
+                await ShipmentService.createShipmentForOrder(id);
+            }
+            if(body.status === OrderStatus.CANCELLED) {
+                await ShipmentService.deleteShipment(id);
+            }
             const order = await OrderService.updateOrderStatus(id, OrderStatus[body.status as keyof typeof OrderStatus]);
             if (!order) {
                 return c.json({ message: "order not found" }, 404);

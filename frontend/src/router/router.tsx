@@ -11,6 +11,7 @@ import Products from '../admin/pages/Products';
 import Product from '../admin/pages/Product';
 import Orders from '../admin/pages/Orders';
 // import Order from '../pages/Order';
+import Shipments from '../admin/pages/Shipments';
 import AuthLayout from '../layout/AuthLayout';
 import { AuthProvider } from '../providers';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -96,6 +97,19 @@ const router = createBrowserRouter([
                       // {
                       //   path: ':id',
                       //   element: <Order />
+                      // }
+                    ]
+                  },
+                  {
+                    path: 'shipments',
+                    children: [
+                      {
+                        index: true,
+                        element: <Shipments />,
+                      },
+                      // {
+                      //   path: ':id',
+                      //   element: <Shipment />
                       // }
                     ]
                   }

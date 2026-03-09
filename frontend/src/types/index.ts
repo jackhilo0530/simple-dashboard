@@ -5,6 +5,8 @@ export interface User {
     role: string;
     isActive: boolean;
     img_url?: string;
+    isLoggedIn?: boolean;
+    createdAt: string;
 }
 
 export interface ShopProduct {
@@ -60,4 +62,15 @@ export interface Order {
     status: string;
     items: OrderItem[];
     createdAt: string;
+}
+
+export interface Shipment {
+    id: number;
+    order_id: number;
+    order: Order;
+    tracking_number: string;
+    carrier: string;
+    status: string;
+    createdAt: string;
+    shipped_at: string;
 }
