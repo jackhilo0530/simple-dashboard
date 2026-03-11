@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingCart, Users, University, ListOrdered, Motorbike, MessageSquareText } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Users, University, ListOrdered, Motorbike, MessageSquareText, MessageSquareMore } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 interface NavLinkType {
@@ -15,6 +15,7 @@ const navLinks: NavLinkType[] = [
     { name: "Shipments", path: "/admin/shipments", icon: <Motorbike size={20} /> },
     { name: "Users", path: "/users", icon: <Users size={20} /> },
     { name: "Chats", path: "/admin/chats", icon: <MessageSquareText size={20} /> },
+    { name: "SocketChats", path: "/admin/socketChats", icon: <MessageSquareMore size={20} /> },
 ]
 
 export const Navbar = () => {
