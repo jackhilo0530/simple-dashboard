@@ -83,3 +83,11 @@ export interface Chat {
     message: string;
     createdAt: string;
 }
+
+export interface SocketChatting {
+    id: number;
+    user_id: number;
+    receiver_id: number;
+    message: string;
+    createdAt: string;
+}

@@ -4,7 +4,7 @@ export const ChatService = {
     getChats: async () => {
         return await prisma.chat.findMany({
             include: {
-                user: true,
+                sender: true,
             },
         });
     },
@@ -12,7 +12,7 @@ export const ChatService = {
         return await prisma.chat.findUnique({
             where: { id },
             include: {
-                user: true,
+                sender: true,
             },
         });
     },
@@ -33,7 +33,7 @@ export const ChatService = {
                 receiver_id: data.receiver_id,
             },
             include: {
-                user: true,
+                sender: true,
             },
         });
     },
@@ -41,7 +41,7 @@ export const ChatService = {
         const chat = await prisma.chat.findUnique({
             where: { id },
             include: {
-                user: true,
+                sender: true,
             },
         });
         if (!chat) {

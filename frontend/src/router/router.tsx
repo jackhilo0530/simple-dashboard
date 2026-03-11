@@ -13,6 +13,8 @@ import Orders from '../admin/pages/Orders';
 // import Order from '../pages/Order';
 import Shipments from '../admin/pages/Shipments';
 import Charts from '../admin/pages/Charts';
+import { SocketChats } from '../admin/pages/SocketChats';
+// import {SocketChat} from '../admin/pages/SocketChat';
 import AuthLayout from '../layout/AuthLayout';
 import { AuthProvider } from '../providers';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -117,6 +119,19 @@ const router = createBrowserRouter([
                   {
                     path: 'chats',
                     element: <Charts />,
+                  },
+                  {
+                    path: 'socketChats',
+                    children: [
+                      {
+                        index: true,
+                        element: <SocketChats />,
+                      },
+                      // {
+                      //   path: ':contactId',
+                      //   element: <SocketChat />,
+                      // }
+                    ]
                   }
                 ]
 
