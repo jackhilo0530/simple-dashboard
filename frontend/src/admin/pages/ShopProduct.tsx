@@ -115,7 +115,7 @@ const ShopProduct: React.FC = () => {
                                         Edit Product Details
                                     </button>
                                 </a>
-                                <Link to="/products">
+                                <Link to="/admin/products">
                                     <button className="w-full bg-white rounded-2xl border border-slate-200 py-4 text-sm font-bold text-slate-600 transition-all hover:bg-slate-50">
                                         Return to List
                                     </button>

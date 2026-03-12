@@ -1,0 +1,4 @@
+**/generated-client/**
+.env
+node_modules
+/prisma/migrations

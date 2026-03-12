@@ -1,15 +1,18 @@
 import { Server, Socket } from "socket.io";
-import { prisma } from "../lib/prisma.js";
+import db from "@repo/db";
+
+const { prisma } = db;
 
 export const setupSocketHandlers = (io: Server) => {
-    io.on("connection", (socket: Socket) => {
-
+    const server: any = io;
+    server.on("connection", (socket: Socket) => {
+        
         socket.on("joinRoom", (userId: number) => {
             // Force join their own ID-based room
             socket.join(`user_${userId}`);
         });
 
-        socket.on("sendMessage", async ({ senderId, receiverId, message }) => {
+        socket.on("sendMessage", async ({ senderId, receiverId, message } : { senderId: number, receiverId: number, message: string }) => {
             if (!message.trim()) return;
 
             try {
@@ -22,7 +25,7 @@ export const setupSocketHandlers = (io: Server) => {
                 });
 
                 // Emit to both target rooms at once
-                io.to([`user_${receiverId}`, `user_${senderId}`]).emit("receiveMessage", chat);
+                io.to(`user_${receiverId}`).emit("receiveMessage", chat);
             } catch (error) {
                 console.error("Prisma Error:", error);
                 socket.emit("error", { message: "Message delivery failed" });

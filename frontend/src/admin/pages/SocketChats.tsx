@@ -40,7 +40,7 @@ export const SocketChats: React.FC = () => {
     return (
         <div className="flex-1 p-10 bg-white">
             <h1 className="text-2xl font-bold mb-6">Chats</h1>
-            <div className="rounded-lg bg-white w-full flex border border-gray-200 shadow-sm ">
+            <div className="rounded-lg bg-white w-full flex border border-gray-200 shadow-sm ring-1 ring-gray-200/50">
                 <div className="basis-1/4 font-semibold text-gray-500">
                     <div className='px-4 py-3 flex items-center gap-3 sticky top-0 bg-white z-10'>
                         {me && <img src={`${API_BASE_URL}${me.img_url}`} alt="img" width={40} height={40} className="inline-block rounded-full mr-2" />}
