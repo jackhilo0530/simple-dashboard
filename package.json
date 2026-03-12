@@ -4,9 +4,12 @@
   "private": true,
   "workspaces": [
     "backend",
-    "frontend"
+    "frontend",
+    "chat",
+    "packages/db"
   ],
   "scripts": {
+    "postinstall": "npm run db:generate -w @repo/db",
     "start:backend": "cd backend && npm run dev",
     "start:frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
@@ -15,11 +18,8 @@
     "lint": "cd backend && eslint . --ext .ts && cd ../frontend && eslint . --ext .ts,.tsx",
     "prisma:migrate": "cd backend && npx prisma migrate dev"
   },
+  "type": "commonjs",
   "devDependencies": {
-    "concurrently": "^8.2.0",
-    "prisma": "^6.18.0"
-  },
-  "dependencies": {
-    "@prisma/client": "^6.18.0"
+    "concurrently": "^8.2.0"
   }
 }

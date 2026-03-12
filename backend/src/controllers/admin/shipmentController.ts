@@ -1,7 +1,7 @@
 import { Context } from "hono";
 import { ShipmentService } from "../../services/shipmentService";
 import { OrderService } from "../../services/orderService";
-import { ShipmentCarrier, ShipmentStatus, OrderStatus } from "../../generated/prisma/enums";
+import { ShipmentCarrier, ShipmentStatus, OrderStatus } from "@repo/db/generated-client/enums";
 
 export const ShipmentController = {
     getShipments: async (c: Context) => {
@@ -23,6 +23,7 @@ export const ShipmentController = {
                 return c.json({ message: "shipment not found" }, 404);
             }
             return c.json(shipment);
+            
         } catch (error) {
             return c.json({ message: "internal server error" }, 500);
         }

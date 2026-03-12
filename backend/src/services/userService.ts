@@ -4,7 +4,7 @@ import path from "path";
 import fs from "fs";
 import crypto from "crypto";
 import z from "zod";
-import { prisma } from "../lib/prisma";
+import { prisma } from "@repo/db";
 
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret";

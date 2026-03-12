@@ -35,33 +35,65 @@ export const SocketChat = ({ selectedUser, myInfo }: { selectedUser: User; myInf
     }, [messages]);
 
     useEffect(() => {
-        // 1. Load History from Hono Route
+        socketRef.current = io(SOCKET_URL);
+        socketRef.current.emit('joinRoom', myId);
+
+        if (Notification.permission === "default") {
+            Notification.requestPermission();
+        }
+
+        return () => {
+            socketRef.current?.disconnect();
+        };
+    }, [myId]);
+
+    useEffect(() => {
         const loadHistory = async () => {
             const res = await fetch(`${API_URL}/${myId}/${selectedUser.id}`);
             const data = await res.json();
-            setMessages(data.reverse()); // Assuming API returns in desc order
+            setMessages(data.reverse());
         };
         loadHistory();
 
-        // 2. Initialize Socket.io
-        socketRef.current = io(SOCKET_URL);
+        if (!socketRef.current) return;
 
-        // Join private room
-        socketRef.current.emit('joinRoom', myId);
-
-        // Listen for new messages
-        socketRef.current.on('receiveMessage', (newMessage: SocketChatting) => {
-            // Only append if it belongs to this conversation
-            if (newMessage.user_id === selectedUser.id || newMessage.receiver_id === selectedUser.id) {
+        // Define the handler so we can remove it later
+        const handleReceiveMessage = (newMessage: SocketChatting) => {
+            // 1. If the message is from the active chat, update the UI
+            if (newMessage.user_id === selectedUser.id) {
                 setMessages((prev) => [...prev, newMessage]);
             }
-        });
+
+            // 2. Regardless of who it's from, show a notification IF:
+            // - It's not from me
+            // - I am not looking at that specific chat OR the tab is hidden
+            const isFromOther = newMessage.user_id !== myId;
+            const isNotActiveChat = newMessage.user_id !== selectedUser.id;
+            const isTabHidden = document.visibilityState !== 'visible';
+
+            if (isFromOther && (isNotActiveChat || isTabHidden)) {
+                if (Notification.permission === "granted") {
+                    const notification = new Notification(`New message from ${newMessage.user_id}`, {
+                        body: newMessage.message,
+                        icon: `${API_BASE_URL}${selectedUser.img_url}`,
+                    });
+                    notification.onclick = () => {
+                        window.focus();
+                        notification.close();
+                    };
+                }
+            }
+        };
+
+        socketRef.current.on('receiveMessage', handleReceiveMessage);
 
         return () => {
-
-            socketRef.current?.disconnect();
+            // CLEANUP: Remove the specific listener and disconnect
+            socketRef.current?.off('receiveMessage', handleReceiveMessage);
         };
-    }, [myId, selectedUser.id]);
+    }, [myId, selectedUser]);
+
+
     const handleSend = () => {
         if (!input.trim() || !socketRef.current) return;
 
@@ -70,6 +102,13 @@ export const SocketChat = ({ selectedUser, myInfo }: { selectedUser: User; myInf
             receiverId: selectedUser.id,
             message: input,
         });
+        setMessages((prev) => [...prev, {
+            id: Date.now(), // Temporary ID for optimistic UI
+            user_id: myId,
+            receiver_id: selectedUser.id,
+            message: input,
+            createdAt: new Date().toISOString(),
+        }]);
         setInput('');
     };
 
@@ -125,6 +164,7 @@ export const SocketChat = ({ selectedUser, myInfo }: { selectedUser: User; myInf
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                     className=" bg-white flex-1 border rounded-md px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Type your message..."
                 />

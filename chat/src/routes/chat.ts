@@ -1,5 +1,7 @@
 import { Hono } from "hono";
-import { prisma } from "../lib/prisma.js";
+import db from "@repo/db";
+
+const {prisma} = db
 
 const chatRoutes = new Hono();
 
@@ -7,7 +9,7 @@ const chatRoutes = new Hono();
 chatRoutes.get("/:userId/:contactId", async (c) => {
     const userId = parseInt(c.req.param("userId"));
     const contactId = parseInt(c.req.param("contactId"));
-    
+
 
     try {
         const messages = await prisma.chat.findMany({

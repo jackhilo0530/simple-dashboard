@@ -145,9 +145,6 @@ const ShopProducts: React.FC = () => {
                 </table>
 
             </div>
-
-
-
         </div>
     );
 };

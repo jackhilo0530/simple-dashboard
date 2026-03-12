@@ -66,10 +66,6 @@ export const CurrentSales: React.FC = () => {
                     height="400px"
                 />
             </div>
-            <div>
-                
-            </div>
-
         </div>
     );
 };

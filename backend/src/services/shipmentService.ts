@@ -1,5 +1,5 @@
-import {prisma} from "../lib/prisma";
-import { ShipmentCarrier, ShipmentStatus } from "../generated/prisma/enums";
+import {prisma} from "@repo/db";
+import { ShipmentCarrier, ShipmentStatus } from "@repo/db/generated-client/enums";
 
 export const ShipmentService = {
     createShipmentForOrder: async (orderId: number) => {

@@ -2,7 +2,7 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import crypto from "node:crypto";
 import z from "zod";
-import { prisma } from "../lib/prisma";
+import { prisma } from "@repo/db";
 
 const shopProductSchema = z.object({
     name: z.string().min(2).trim(),

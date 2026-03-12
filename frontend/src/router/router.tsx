@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Navigate to="/admin" replace />
+        element: <Navigate to="/admin/dashboard" replace />
       },
       {
         path: '/auth',
@@ -53,15 +53,15 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <Navigate to="/admin" replace />
+                element: <Navigate to="/admin/dashboard" replace />
               },
               {
                 path: '/admin',
                 children: [
                   {
                     index: true,
+                    path: 'dashboard',
                     element: <Dashboard />
-
                   },
 
                   {

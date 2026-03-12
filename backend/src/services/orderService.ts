@@ -1,5 +1,5 @@
-import { prisma } from "../lib/prisma";
-import { OrderStatus } from "../generated/prisma/enums";
+import { prisma } from "@repo/db";
+import { OrderStatus } from "@repo/db/generated-client/enums";
 
 export const OrderService = {
     getOrders: async () => {
