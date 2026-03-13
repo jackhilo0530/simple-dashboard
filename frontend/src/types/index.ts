@@ -88,6 +88,7 @@ export interface SocketChatting {
     id: number;
     user_id: number;
     receiver_id: number;
+    sender: User;
     message: string;
     createdAt: string;
 }

@@ -22,6 +22,9 @@ export const setupSocketHandlers = (io: Server) => {
                         receiver_id: Number(receiverId),
                         message,
                     },
+                    include: {
+                        sender: true,
+                    },
                 });
 
                 // Emit to both target rooms at once
