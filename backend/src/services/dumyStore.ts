@@ -29,6 +29,7 @@ export async function fetchProducts(skip: number, limit: number, search: string,
         }
         res_final = await res.json();
         res_final_page = res_final.products.slice(skip, Math.min((skip + limit), res_final.total));
+        
         return { products: res_final_page, total: res_final.total };
     }
 }

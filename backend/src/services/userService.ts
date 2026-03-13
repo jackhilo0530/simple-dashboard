@@ -5,6 +5,7 @@ import fs from "fs";
 import crypto from "crypto";
 import z from "zod";
 import { prisma } from "@repo/db";
+import {Prisma} from "@repo/db";
 
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
@@ -127,6 +128,34 @@ export const UserService = {
                 isLoggedIn: true,
                 createdAt: true,
             },
+        });
+        return users;
+    },
+
+    getUsersForChat: async (skip:number, keyword: string, take: number) => {
+        const where: Prisma.UserWhereInput = keyword
+            ? {
+                OR: [
+                    { username: { contains: keyword, mode: "insensitive" as Prisma.QueryMode } },
+                    { email: { contains: keyword, mode: "insensitive" as Prisma.QueryMode } },
+                ],
+            }
+            : {};
+
+        const users = await prisma.user.findMany({
+            where,
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                role: true,
+                isActive: true,
+                img_url: true,
+                isLoggedIn: true,
+                createdAt: true,
+            },
+            skip,
+            take,
         });
         return users;
     },

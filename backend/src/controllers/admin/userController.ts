@@ -12,6 +12,26 @@ export const UserController = {
     }
   },
 
+  getUsersForChat: async (c: Context) => {
+    try {
+      const page = Number(c.req.query("page")) || 1;
+      const keyword = c.req.query("keyword") || "";
+      const perPage = Number(c.req.query("perPage")) || 5;
+      const skip = (page - 1) * perPage;
+
+      console.log("Received getUsersForChat request with:", { page, keyword, perPage });
+
+      if (page <= 0 || perPage <= 0) {
+        return c.json({ message: "invalid pagination parameters" }, 400);
+      }
+
+      const users = await UserService.getUsersForChat(skip, keyword, perPage);
+      return c.json(users);
+    } catch (error) {
+      return c.json({ message: "internal server error" }, 500);
+    }
+  },
+
   deleteUser: async (c: Context) => {
     try {
       const id = Number(c.req.param("id"));
